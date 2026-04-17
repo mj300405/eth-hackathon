@@ -19,16 +19,19 @@ Wersja hackathonowa nie podejmuje decyzji operacyjnych. Daje warstwe predykcyjna
 
 - prognozuje generacje OZE,
 - agreguje wynik do lokalizacji,
-- liczy wskaznik ryzyka,
+- liczy wskaznik ryzyka na syntetycznym scenariuszu ograniczen,
 - pokazuje rekomendacje dzialan.
+
+Projekt jest kierowany wylacznie do Tauron Dystrybucja jako OSD. Nie jest narzedziem dla sprzedazy energii i nie zaklada przeplywu danych pomiedzy dystrybucja a sprzedaza.
 
 ## In scope
 
 - Prognoza produkcji PV dla wybranych lokalizacji.
 - Opcjonalnie prognoza produkcji wiatrowej.
-- Dane pogodowe z publicznych API.
+- Dane pogodowe z IMGW-PIB albo innego certyfikowanego/zatwierdzonego dostawcy.
 - Dane historycznej generacji OZE jako punkt odniesienia.
-- Publiczne dane Taurona o mapach elastycznosci i dostepnych mocach jako proxy ograniczen.
+- Syntetyczne dane o przeciazeniach/ograniczeniach jako scenariusz demo.
+- Publiczne dane Taurona o mapach elastycznosci i dostepnych mocach jako kontekst, nie jako historia realnych przeciazen.
 - Mapa i ranking obszarow wedlug ryzyka.
 - Prosty model ML albo model hybrydowy: fizyczny + statystyczny.
 
@@ -37,8 +40,10 @@ Wersja hackathonowa nie podejmuje decyzji operacyjnych. Daje warstwe predykcyjna
 - Sterowanie praca sieci.
 - Rzeczywiste przeliczanie rozpływow mocy.
 - Dokladna analiza transformatorow SN/nN.
+- Rzeczywiste dane o przeciazeniach, napieciach, awariach, rozpływach mocy i SCADA/AMI.
 - Dane klientow indywidualnych.
 - Dane z licznikow inteligentnych.
+- Dane sprzedazowe, taryfy handlowe, CRM, billing i jakakolwiek wymiana danych ze spolka sprzedazy.
 - Automatyczne wydawanie decyzji przylaczeniowych.
 
 ## Funkcje MVP
@@ -63,6 +68,7 @@ Wejscie:
 
 - prognoza generacji,
 - proxy lokalnej gestosci OZE,
+- syntetyczny scenariusz ograniczen/przeciazen,
 - proxy ograniczen przylaczeniowych,
 - opcjonalny profil popytu.
 
@@ -79,7 +85,7 @@ Widoki:
 - mapa obszarow,
 - wykres godzinowy,
 - lista lokalizacji z najwyzszym ryzykiem,
-- panel "co zmieniaja dane Taurona".
+- panel "co zmienia formalnie dopuszczona integracja z danymi OSD".
 
 ## Przykladowe rekomendacje
 
@@ -90,7 +96,7 @@ Widoki:
 
 ## Dane potrzebne do wersji produkcyjnej
 
-Od OSD potrzebne bylyby:
+Od OSD, w formalnym i bezpiecznym trybie wspolpracy, potrzebne bylyby:
 
 - topologia sieci,
 - parametry linii i transformatorow,
@@ -100,6 +106,8 @@ Od OSD potrzebne bylyby:
 - dane napieciowe,
 - statusy przylaczen,
 - historia ograniczen i awarii.
+
+Te dane nie sa zakladane w MVP i nie sa symulowane jako dane rzeczywiste. MVP uzywa jawnie syntetycznych scenariuszy.
 
 ## Metryki sukcesu
 
@@ -111,6 +119,6 @@ Techniczne:
 
 Biznesowe:
 
-- Czy system wskazuje obszary wymagajace uwagi?
+- Czy system wskazuje obszary wymagajace uwagi w scenariuszu syntetycznym?
 - Czy rekomendacje sa zrozumiale dla operatora?
-- Czy model pokazuje jasna wartosc po dolaczeniu danych Taurona?
+- Czy model pokazuje jasna wartosc po formalnym dolaczeniu danych OSD?

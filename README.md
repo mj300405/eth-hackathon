@@ -7,11 +7,19 @@ Roboczy projekt hackathonowy: predykcyjna mapa ryzyka lokalnych nadwyzek energii
 Publiczne dane pogodowe, dane o generacji OZE i publiczne informacje sieciowe daja wystarczajaca baze do zbudowania demonstratora, ktory:
 
 - prognozuje produkcje PV i wiatru dla wybranych lokalizacji,
-- wskazuje godziny wysokiego ryzyka lokalnej nadprodukcji,
+- wskazuje godziny wysokiego ryzyka lokalnej nadprodukcji w scenariuszu syntetycznym,
 - laczy prognoze z publicznymi proxy ograniczen sieciowych,
 - pokazuje, jak model moglby zejsc do poziomu stacji SN/nN po podlaczeniu danych OSD.
 
-To nie jest system operacyjnego sterowania siecia. To MVP warstwy predykcyjnej, ktore mozna zintegrowac z danymi Taurona.
+To nie jest system operacyjnego sterowania siecia. To MVP warstwy predykcyjnej dla OSD, bez danych sprzedazowych i bez rzeczywistych danych o przeciazeniach sieci.
+
+## Zalozenia krytyczne
+
+- Projekt jest kierowany do Tauron Dystrybucja jako operatora systemu dystrybucyjnego, nie do spolek sprzedazy energii.
+- Ze wzgledu na unbundling nie zakladamy wymiany danych pomiedzy dystrybucja i sprzedaza.
+- Dane pogodowe dla wersji prezentowanej OSD musza pochodzic z IMGW-PIB albo innego certyfikowanego/zatwierdzonego dostawcy.
+- Dane o przeciazeniach i ograniczeniach operacyjnych sa syntetyczne. Publiczne dane Taurona slużą tylko jako kontekst i proxy, nie jako prawdziwa historia pracy sieci.
+- Szczegoly sa opisane w [docs/ASSUMPTIONS.md](docs/ASSUMPTIONS.md).
 
 ## Proponowana nazwa
 
@@ -28,6 +36,7 @@ Alternatywy:
 
 - [PLAN.md](PLAN.md) - plan prac i harmonogram hackathonu.
 - [docs/MVP_SCOPE.md](docs/MVP_SCOPE.md) - zakres MVP, zalozenia i ograniczenia.
+- [docs/ASSUMPTIONS.md](docs/ASSUMPTIONS.md) - zalozenia regulacyjne, pogodowe i bezpieczenstwa.
 - [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) - publiczne zrodla danych i braki danych.
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - proponowana architektura techniczna.
 - [docs/PITCH.md](docs/PITCH.md) - krotki opis do prezentacji.
@@ -37,7 +46,7 @@ Alternatywy:
 
 ## MVP w jednym zdaniu
 
-Dashboard mapowy, ktory na podstawie prognozy pogody i danych historycznych generacji OZE pokazuje, gdzie i kiedy w kolejnym dniu moze wystapic wysokie ryzyko przeciazen lub ograniczen dla dalszej integracji prosumentow.
+Dashboard mapowy, ktory na podstawie zaufanych danych pogodowych, prognozy generacji OZE i syntetycznych scenariuszy ograniczen pokazuje, gdzie i kiedy w kolejnym dniu moze pojawic sie wysokie ryzyko dla dalszej integracji prosumentow.
 
 ## Co pokazujemy jury
 
@@ -49,7 +58,7 @@ Dashboard mapowy, ktory na podstawie prognozy pogody i danych historycznych gene
 
 ## Najwieksza uczciwosc projektowa
 
-Z danych publicznych da sie zbudowac dobry demonstrator i model predykcyjny. Nie da sie jednak wiarygodnie policzyc rzeczywistych przeciazen konkretnych transformatorow bez danych OSD:
+Z danych publicznych i syntetycznych scenariuszy da sie zbudowac dobry demonstrator i model predykcyjny. Nie da sie jednak wiarygodnie policzyc rzeczywistych przeciazen konkretnych transformatorow bez chronionych danych OSD:
 
 - topologii sieci,
 - obciazen transformatorow,

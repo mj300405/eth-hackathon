@@ -6,8 +6,13 @@ Stan dokumentu: 2026-04-17
 
 MVP powinno rozdzielac dwie kategorie danych:
 
-- dane publiczne, ktore wystarcza do demonstratora,
-- dane OSD, ktore sa potrzebne do wersji operacyjnej.
+- zaufane dane publiczne lub formalnie zaakceptowane przez OSD, ktore wystarcza do demonstratora,
+- syntetyczne dane scenariuszowe, ktore zastepuja chronione dane o przeciazeniach,
+- dane OSD, ktore sa potrzebne do wersji operacyjnej, ale nie sa dostepne w MVP.
+
+Ze wzgledu na infrastrukture krytyczna dane pogodowe dla wersji prezentowanej OSD powinny pochodzic z IMGW-PIB albo innego certyfikowanego/zatwierdzonego dostawcy. Open-Meteo, NASA POWER i podobne zrodla traktujemy tylko jako fallback developerski.
+
+Ze wzgledu na unbundling projekt jest kierowany wylacznie do Tauron Dystrybucja jako OSD. Nie uzywamy danych sprzedazowych i nie projektujemy wymiany informacji ze spolkami sprzedazy energii.
 
 ## Stan datasetow MVP
 
@@ -15,9 +20,10 @@ MVP powinno rozdzielac dwie kategorie danych:
 |---|---|---|---|---|
 | `locations` | gotowy jako probka | `data/samples/locations.csv` | Tauron Dystrybucja - lista oddzialow | lista lokalizacji demo zgodna z obszarem Taurona |
 | `pv_installation_assumptions` | gotowy jako probka | `data/samples/pv_installation_assumptions.csv` | zalozenia demo / PVGIS | parametry instalacji uzyte do symulacji PV |
-| `weather_hourly` | brak | `data/processed/weather_hourly.csv` | Open-Meteo albo IMGW | wejscie do prognozy PV/wiatr |
-| `generation_forecast` | brak | `data/processed/generation_forecast.csv` | PVGIS albo model z Open-Meteo | godzinowa prognoza produkcji OZE |
-| `tauron_flexibility_constraints` | brak | `data/processed/tauron_flexibility_constraints.csv` | mapy elastycznosci Tauron Dystrybucja | najlepszy publiczny proxy ograniczen/przeciazen sieci |
+| `weather_hourly` | brak | `data/processed/weather_hourly.csv` | IMGW-PIB albo zatwierdzony dostawca meteo | zaufane wejscie do prognozy PV/wiatr |
+| `generation_forecast` | brak | `data/processed/generation_forecast.csv` | PVGIS albo model z meteo IMGW-PIB | godzinowa prognoza produkcji OZE |
+| `synthetic_grid_constraints` | brak | `data/processed/synthetic_grid_constraints.csv` | symulacja demo | syntetyczne scenariusze przeciazen/ograniczen |
+| `tauron_flexibility_context` | opcjonalny | `data/processed/tauron_flexibility_context.csv` | mapy elastycznosci Tauron Dystrybucja | publiczny kontekst, nie etykieta realnych przeciazen |
 | `tauron_connection_capacity` | brak | `data/processed/tauron_connection_capacity.csv` | dostepne moce przylaczeniowe Tauron Dystrybucja | proxy marginesu przylaczeniowego |
 | `oze_density` | brak | `data/processed/oze_density.csv` | URE / GUS / dane lokalne | proxy gestosci prosumentow i OZE |
 | `demand_proxy` | brak | `data/processed/demand_proxy.csv` | GUS / profil dobowy / zalozenia demo | proxy lokalnego popytu |
@@ -30,14 +36,14 @@ MVP powinno rozdzielac dwie kategorie danych:
 | Obszar | Zrodlo | Link | Uzycie w MVP |
 |---|---|---|---|
 | Obszar Taurona i oddzialy | Tauron Dystrybucja | https://www.tauron-dystrybucja.pl/kontakt/oddzialy | oficjalna lista lokalizacji startowych |
-| Pogoda bieżąca i historyczna | IMGW | https://dane.imgw.pl | temperatura, wiatr, zachmurzenie, opady |
-| Prognozy i historia pogody | Open-Meteo | https://open-meteo.com | szybkie API pogodowe dla lokalizacji |
-| Promieniowanie i meteorologia | NASA POWER | https://power.larc.nasa.gov | dane godzinowe solarne i pogodowe |
+| Pogoda biezaca, historyczna i prognozy | IMGW-PIB | https://dane.imgw.pl | podstawowe zaufane zrodlo meteo dla MVP OSD |
+| Dane meteo developerskie | Open-Meteo | https://open-meteo.com | tylko fallback developerski, nie zrodlo decyzyjne dla OSD |
+| Promieniowanie i meteorologia developerska | NASA POWER | https://power.larc.nasa.gov | tylko fallback/analityka porownawcza |
 | Produkcja PV z lokalizacji | PVGIS | https://re.jrc.ec.europa.eu/pvg_tools/en/ | symulacja godzinowej produkcji PV |
 | Generacja OZE w systemie | PSE raporty | https://raporty.pse.pl | walidacja trendow PV/wiatr na poziomie kraju |
 | Dane systemowe | PSE | https://www.pse.pl/dane-systemowe | zapotrzebowanie, generacja, kontekst KSE |
 | Dane europejskie | ENTSO-E Transparency Platform | https://transparency.entsoe.eu | generacja wedlug typu, alternatywne zrodlo |
-| Zapotrzebowanie na uslugi elastycznosci | Tauron Dystrybucja | https://www.tauron-dystrybucja.pl/uslugi-dystrybucyjne/uslugi-elastycznosci/zwiekszenie-elastycznosci-sieci | GPZ/RS z czestotliwoscia ograniczen i zapotrzebowaniem MW |
+| Zapotrzebowanie na uslugi elastycznosci | Tauron Dystrybucja | https://www.tauron-dystrybucja.pl/uslugi-dystrybucyjne/uslugi-elastycznosci/zwiekszenie-elastycznosci-sieci | publiczny kontekst do scenariuszy, nie rzeczywista historia przeciazen |
 | Dostepne moce przylaczeniowe | Tauron Dystrybucja | https://www.tauron-dystrybucja.pl/przylaczenie-do-sieci/dostepne-moce | proxy ograniczen sieciowych |
 | Postepowania na uslugi elastycznosci | Tauron Dystrybucja | https://www.tauron-dystrybucja.pl/przetargi/uslugi-elastycznosci | potwierdzenie konkretnych obszarow ograniczen |
 | Planowane inwestycje/przylaczenia | Tauron media / mapy | https://media.tauron.pl | warstwa kontekstowa do mapy |
@@ -58,9 +64,11 @@ Tych danych prawdopodobnie nie zdobedziemy bez wspolpracy z Tauronem:
 - statusy lacznikow,
 - dane SCADA/AMI.
 
+W MVP nie probujemy ich pozyskac, odtwarzac ani zgadywac. Dane o przeciazeniach tworzymy jako syntetyczny scenariusz demo.
+
 ## Jak obejsc braki danych w MVP
 
-Zamiast udawac, ze mamy dane sieciowe, budujemy proxy.
+Zamiast udawac, ze mamy dane sieciowe, budujemy proxy i syntetyczne scenariusze.
 
 ### Proxy gestosci OZE
 
@@ -76,8 +84,10 @@ Mozliwe przyblizenia:
 
 Mozliwe przyblizenia:
 
+- syntetyczny scenariusz przeciazen dla oddzialow Tauron Dystrybucja,
 - dostepne moce przylaczeniowe z publikacji OSD,
-- planowane odmowy/przylaczenia, jesli publiczne,
+- publiczne mapy elastycznosci jako kontekst,
+- planowane odmowy/przylaczenia, jesli publiczne i bezpieczne do uzycia,
 - odleglosc od stacji lub obszarow inwestycyjnych,
 - gestosc istniejacych instalacji OZE,
 - historyczna czestotliwosc wysokiej generacji.
@@ -119,6 +129,10 @@ Mozliwe przyblizenia:
 | `wind_speed_ms` | float | predkosc wiatru |
 | `cloud_cover_pct` | float | zachmurzenie |
 | `solar_radiation_wm2` | float | promieniowanie, jesli dostepne |
+| `source` | string | IMGW-PIB albo zatwierdzony dostawca |
+| `source_url` | string | link do zrodla |
+| `fetched_at` | datetime | czas pobrania |
+| `data_kind` | string | observation/forecast/history |
 
 ### `pv_installation_assumptions`
 
@@ -166,17 +180,31 @@ Mozliwe przyblizenia:
 | `flexibility_mw` | float | zapotrzebowanie MW z map elastycznosci jesli dostepne |
 | `proxy_confidence` | string | low/medium/high zalezne od jakosci mapowania |
 
-### `tauron_flexibility_constraints`
+### `synthetic_grid_constraints`
 
 | Pole | Typ | Opis |
 |---|---|---|
-| `constraint_id` | string | identyfikator wpisu |
+| `scenario_id` | string | identyfikator scenariusza |
+| `timestamp` | datetime | godzina scenariusza |
+| `location_id` | string | lokalizacja |
+| `synthetic_constraint_index` | float | symulowany poziom ograniczenia 0-1 |
+| `synthetic_overload_flag` | bool | symulowana flaga przeciazenia |
+| `synthetic_overload_mw` | float | symulowana wartosc przekroczenia/marginesu |
+| `scenario_basis` | string | opis zalozen scenariusza |
+| `is_synthetic` | bool | zawsze true |
+| `source_note` | string | jasna informacja, ze to nie sa dane Taurona |
+
+### `tauron_flexibility_context`
+
+| Pole | Typ | Opis |
+|---|---|---|
+| `context_id` | string | identyfikator wpisu |
 | `branch` | string | oddzial Tauron Dystrybucja |
 | `network_node` | string | nazwa GPZ/RS/linii z publikacji |
 | `service_type` | string | typ uslugi elastycznosci |
 | `period_start` | date | poczatek okresu swiadczenia |
 | `period_end` | date | koniec okresu swiadczenia |
-| `constraint_hours_per_year` | float | czestotliwosc ograniczen sieciowych w h/rok |
+| `constraint_hours_per_year` | float | publicznie podana czestotliwosc potrzeb elastycznosci w h/rok, nie historia przeciazen |
 | `flexibility_mw` | float | zapotrzebowanie na moc w usludze elastycznosci |
 | `source_url` | string | link do strony Taurona |
 | `source_date` | date | data zebrania danych |
@@ -210,13 +238,14 @@ Na start:
 
 1. Uzyj `data/samples/locations.csv` jako listy 11 oddzialow Tauron Dystrybucja.
 2. Ustaw jawne zalozenia PV w `pv_installation_assumptions.csv`.
-3. Pobierz pogode dla tych lokalizacji z Open-Meteo albo IMGW.
+3. Pobierz pogode dla tych lokalizacji z IMGW-PIB albo zatwierdzonego dostawcy meteo.
 4. Uzyj PVGIS albo prostego modelu PV z promieniowania do wyznaczenia profilu PV.
-5. Wprowadz recznie lub zeskrob publiczne dane Taurona o zapotrzebowaniu na uslugi elastycznosci.
-6. Wprowadz recznie lub zeskrob dostepne moce przylaczeniowe Taurona.
-7. Dodaj proxy gestosci OZE z URE/GUS albo ustaw wersje demonstracyjna.
-8. Dodaj `demand_proxy.csv` jako prosty profil popytu.
-9. Zapisz wszystko do `data/processed/`.
+5. Wygeneruj `synthetic_grid_constraints.csv` jako jawny scenariusz przeciazen demo.
+6. Opcjonalnie wprowadz publiczny kontekst Taurona o zapotrzebowaniu na uslugi elastycznosci.
+7. Wprowadz recznie lub zeskrob dostepne moce przylaczeniowe Taurona.
+8. Dodaj proxy gestosci OZE z URE/GUS albo ustaw wersje demonstracyjna.
+9. Dodaj `demand_proxy.csv` jako prosty profil popytu.
+10. Zapisz wszystko do `data/processed/`.
 
 ## Uwagi prawne i licencyjne
 
@@ -224,3 +253,5 @@ Na start:
 - W dashboardzie podac zrodla danych.
 - Nie przetwarzac danych osobowych.
 - Nie sugerowac, ze wyniki sa oficjalnymi danymi Taurona.
+- Nie uzywac danych sprzedazowych ani nie projektowac wymiany informacji ze spolkami sprzedazy energii.
+- Oznaczac wszystkie dane o przeciazeniach jako syntetyczne, jesli nie pochodza z formalnie przekazanego i dopuszczonego zbioru OSD.

@@ -24,10 +24,13 @@ Na start warto dodac:
 
 - `locations.csv` - lokalizacje oddzialow Tauron Dystrybucja,
 - `pv_installation_assumptions.csv` - jawne zalozenia mocy i geometrii instalacji PV, dostepne jako probka w `data/samples/`,
-- `weather_hourly.csv` - pogoda godzinowa,
+- `weather_hourly.csv` - pogoda godzinowa z IMGW-PIB albo zatwierdzonego dostawcy meteo,
 - `generation_forecast.csv` - prognoza PV/wiatr,
-- `tauron_flexibility_constraints.csv` - publiczne proxy ograniczen sieciowych z map elastycznosci Taurona,
+- `synthetic_grid_constraints.csv` - jawnie syntetyczne scenariusze przeciazen/ograniczen,
+- `tauron_flexibility_context.csv` - publiczny kontekst z map elastycznosci Taurona, nie etykiety realnych przeciazen,
 - `tauron_connection_capacity.csv` - publiczne moce przylaczeniowe Taurona,
 - `demand_proxy.csv` - demonstracyjny profil popytu lokalnego,
 - `grid_proxy.csv` - polaczone proxy sieciowe dla lokalizacji,
 - `risk_hourly.csv` - wynikowy risk score.
+
+Open-Meteo, NASA POWER i podobne serwisy moga byc uzyte do szybkiego developmentu, ale nie jako glowne zrodlo danych pogodowych dla wersji prezentowanej OSD.

@@ -5,15 +5,17 @@
 - Wybrac finalny stack: Streamlit czy FastAPI + frontend.
 - Wybrac zakres: PV-only czy PV + wiatr.
 - Wybrac obszar demo: 3-5 lokalizacji albo powiaty.
-- Ustalic, czy dane pobieramy live z API, czy pracujemy na probkach.
+- Potwierdzic, ze projekt jest wylacznie dla OSD/dystrybucji, bez danych sprzedazowych.
+- Ustalic, czy dane pogodowe pobieramy z IMGW-PIB live, czy pracujemy na probkach od zaufanego dostawcy.
 
 ## Priorytet 1 - dane
 
 - Przygotowac `locations.csv` na podstawie 11 oddzialow Tauron Dystrybucja.
 - Przygotowac `pv_installation_assumptions.csv` z jawnymi zalozeniami instalacji demo.
-- Dodac skrypt pobierania pogody dla lokalizacji.
+- Dodac skrypt pobierania pogody z IMGW-PIB albo zatwierdzonego dostawcy.
 - Dodac skrypt pobierania/symulacji PV z PVGIS.
-- Przygotowac `tauron_flexibility_constraints.csv` z map zapotrzebowania na uslugi elastycznosci.
+- Przygotowac generator `synthetic_grid_constraints.csv` dla jawnie syntetycznych scenariuszy przeciazen.
+- Przygotowac opcjonalny `tauron_flexibility_context.csv` z map zapotrzebowania na uslugi elastycznosci.
 - Przygotowac `tauron_connection_capacity.csv` z publikacji o dostepnych mocach.
 - Przygotowac `demand_proxy.csv` z prostym profilem popytu.
 - Ujednolicic format czasu.
@@ -30,6 +32,7 @@
 
 - Zdefiniowac `oze_density_index`.
 - Zdefiniowac `constraint_index`.
+- Oznaczyc wszystkie ograniczenia/przeciazenia jako syntetyczne, jesli nie sa formalnie przekazanymi danymi OSD.
 - Zdefiniowac `demand_modifier`.
 - Obliczyc `risk_score` 0-100.
 - Przypisac etykiety: low / medium / high.
@@ -40,14 +43,14 @@
 - Wykres godzinowy produkcji.
 - Ranking lokalizacji wedlug ryzyka.
 - Krotka rekomendacja dla kazdej lokalizacji.
-- Widok porownujacy "dane publiczne" vs "dane Taurona".
+- Widok porownujacy "demo syntetyczne" vs "formalna integracja z danymi OSD".
 
 ## Priorytet 5 - pitch
 
 - Dopisac finalna nazwe projektu.
 - Przygotowac 5-7 slajdow.
 - Dodac screeny z dashboardu.
-- Dopisac ograniczenia i dane potrzebne od Taurona.
+- Dopisac ograniczenia: infrastruktura krytyczna, unbundling, syntetyczne przeciazenia, zaufane meteo.
 
 ## Nice to have
 

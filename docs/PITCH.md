@@ -2,19 +2,22 @@
 
 ## One-liner
 
-GridFlex OZE przewiduje, gdzie i kiedy lokalna produkcja z fotowoltaiki i wiatru moze przekroczyc bezpieczny margines pracy sieci dystrybucyjnej.
+GridFlex OZE pokazuje, jak Tauron Dystrybucja jako OSD moze predykcyjnie oceniac ryzyko lokalnych nadwyzek OZE na bazie zaufanych danych pogodowych i jawnie syntetycznych scenariuszy ograniczen sieci.
 
 ## Problem
 
 Prosumentow i instalacji OZE przybywa szybciej niz mozna modernizowac cala siec. Operatorzy potrzebuja lepszej predykcji lokalnych nadwyzek, aby planowac przylaczenia, inwestycje i mechanizmy elastycznosci.
 
+Projekt dotyczy dystrybucji energii, nie sprzedazy. Nie zakladamy wymiany danych pomiedzy spolka dystrybucyjna i spolkami sprzedazy.
+
 ## Rozwiazanie
 
 Budujemy model, ktory laczy:
 
-- prognozy pogody,
+- zaufane prognozy pogody z IMGW-PIB albo zatwierdzonego dostawcy,
 - historyczna generacje OZE,
 - publiczne dane o dostepnych mocach,
+- syntetyczne scenariusze ograniczen sieciowych,
 - proxy lokalnego popytu i gestosci OZE.
 
 Wynikiem jest mapa ryzyka dla kolejnych godzin i rekomendacje dzialan.
@@ -26,7 +29,7 @@ W demo pokazujemy:
 1. Wybrane lokalizacje z obszaru Tauron.
 2. Prognoze produkcji PV/wiatr na jutro.
 3. Godziny najwiekszej generacji.
-4. Mape ryzyka.
+4. Mape ryzyka dla syntetycznego scenariusza ograniczen.
 5. Rekomendacje: magazynowanie, przesuniecie zuzycia, inwestycja, monitoring.
 
 ## Dlaczego teraz
@@ -37,15 +40,24 @@ Rozwoj prosumeryzmu powoduje, ze siec dystrybucyjna musi byc zarzadzana bardziej
 
 Mozemy zbudowac wiarygodny demonstrator:
 
-- pogoda i promieniowanie,
+- zaufane dane pogodowe,
 - symulacje PV,
 - generacja OZE na poziomie systemu,
 - publiczne informacje o dostepnych mocach,
-- dane o rozwoju mikroinstalacji.
+- dane o rozwoju mikroinstalacji,
+- syntetyczne scenariusze ograniczen, jasno oznaczone jako demo.
 
-## Co daje integracja z Tauronem
+## Dane pogodowe: MVP vs produkcja
 
-Po dolaczeniu danych OSD model moze dzialac na znacznie nizszym poziomie:
+W MVP korzystamy z publicznych danych IMGW-PIB jako oficjalnego i zaufanego zrodla meteorologicznego. To wystarcza, zeby pokazac metode, pipeline danych i zaleznosc produkcji PV/wiatr od pogody.
+
+W wersji produkcyjnej dla OSD zakladamy formalny dostep do lepszego zrodla meteo: profesjonalnego API, Banku Danych IMGW-PIB, umowy z IMGW-PIB albo rownowaznego certyfikowanego dostawcy. Taki dostep powinien dawac mocniejsza audytowalnosc, komplet zmiennych potrzebnych do energetyki, stabilniejsze SLA i jasna odpowiedzialnosc za zrodlo danych.
+
+Architektura pozostaje taka sama: zmienia sie adapter danych pogodowych, nie logika risk score.
+
+## Co daje formalna integracja z OSD
+
+Po formalnym dopuszczeniu danych OSD model moze dzialac na znacznie nizszym poziomie:
 
 - stacje SN/nN,
 - konkretne obwody,
@@ -61,9 +73,8 @@ To zmienia MVP z mapy predykcyjnej w narzedzie wspierajace decyzje operacyjne i 
 - lepsze planowanie przylaczen,
 - wiecej OZE w sieci bez chaotycznych inwestycji,
 - wskazanie miejsc, gdzie magazyny energii lub elastycznosc maja najwiekszy sens,
-- lepsza komunikacja z prosumentami i inwestorami.
+- lepsza komunikacja techniczna z prosumentami i inwestorami w zakresie przylaczen i elastycznosci.
 
 ## Uczciwe ograniczenie
 
-Nie twierdzimy, ze z danych publicznych da sie sterowac siecia. Twierdzimy, ze z danych publicznych da sie pokazac dzialajaca warstwe predykcyjna, a dane Taurona odblokowuja jej wersje produkcyjna.
-
+Nie twierdzimy, ze z danych publicznych da sie sterowac siecia. Nie twierdzimy tez, ze mamy prawdziwe dane o przeciazeniach. Pokazujemy metode na syntetycznych scenariuszach i zaufanych danych pogodowych, bez danych sprzedazowych i bez wymiany informacji pomiedzy dystrybucja a sprzedaza.

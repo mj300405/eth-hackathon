@@ -8,7 +8,7 @@ Zbudowac hackathonowy demonstrator systemu, ktory prognozuje produkcje energii z
 
 ## Hipoteza
 
-Jesli polaczymy prognozy meteorologiczne, historyczna generacje OZE i publiczne informacje o dostepnych mocach przylaczeniowych, mozemy pokazac Tauronowi uzyteczny model predykcyjny. Po dolaczeniu danych wewnetrznych OSD ten sam model moze zostac rozszerzony do poziomu operacyjnego.
+Jesli polaczymy zaufane prognozy meteorologiczne, historyczna generacje OZE, publiczne informacje o dostepnych mocach przylaczeniowych i syntetyczne scenariusze ograniczen, mozemy pokazac Tauron Dystrybucja uzyteczny model predykcyjny dla OSD. Po formalnym dolaczeniu bezpiecznych danych OSD ten sam model moze zostac rozszerzony do poziomu operacyjnego.
 
 ## Zakres MVP
 
@@ -20,9 +20,10 @@ Minimalny zakres:
 
 - pobranie lub przygotowanie danych pogodowych dla wybranego obszaru,
 - oszacowanie produkcji PV i/lub wiatru na najblizsze 24-48 godzin,
+- przygotowanie syntetycznego scenariusza ograniczen/przeciazen,
 - zbudowanie prostego wskaznika ryzyka,
 - pokazanie wynikow na mapie lub w dashboardzie,
-- przygotowanie jasnej narracji: publiczne dane teraz, dane OSD w wersji produkcyjnej.
+- przygotowanie jasnej narracji: zaufane meteo, tylko OSD, brak danych sprzedazowych, syntetyczne ograniczenia teraz, formalne dane OSD w wersji produkcyjnej.
 
 ## Harmonogram 48h
 
@@ -37,9 +38,10 @@ Rezultat: zamkniety zakres, brak rozmywania projektu.
 
 ### Godziny 3-8: dane
 
-- Pobranie danych pogodowych: temperatura, zachmurzenie/promieniowanie, predkosc wiatru.
+- Pobranie danych pogodowych z IMGW-PIB albo zatwierdzonego dostawcy: temperatura, zachmurzenie/promieniowanie, predkosc wiatru.
 - Pobranie danych produkcji PV/wiatr lub przygotowanie syntetycznego targetu z PVGIS.
-- Zebranie publicznych informacji o mocach przylaczeniowych i planowanych przylaczeniach.
+- Przygotowanie syntetycznych danych o ograniczeniach/przeciazeniach dla scenariusza demo.
+- Zebranie publicznych informacji o mocach przylaczeniowych i planowanych przylaczeniach jako kontekstu.
 - Przygotowanie jednego wspolnego formatu danych godzinowych.
 
 Rezultat: dzialajacy dataset demo.
@@ -65,7 +67,7 @@ Gdzie:
 
 - `forecast_generation_index` - przewidywana produkcja OZE w danej godzinie,
 - `local_oze_density_index` - przyblizona gestosc mikroinstalacji/OZE,
-- `connection_constraint_index` - proxy ograniczen na podstawie dostepnych mocy przylaczeniowych,
+- `connection_constraint_index` - syntetyczny/proxy indeks ograniczen na podstawie scenariusza demo i publicznego kontekstu,
 - `local_demand_proxy` - przyblizone zuzycie lub profil popytu.
 
 Rezultat: ryzyko niskie/srednie/wysokie dla kazdej lokalizacji i godziny.
@@ -76,7 +78,7 @@ Rezultat: ryzyko niskie/srednie/wysokie dla kazdej lokalizacji i godziny.
 - Timeline godzinowy.
 - Wykres prognozy PV/wiatr.
 - Panel rekomendacji.
-- Widok "co daje dolaczenie danych Taurona".
+- Widok "co daje formalne dolaczenie danych OSD".
 
 Rezultat: demo, ktore da sie pokazac w 2 minuty.
 
@@ -96,7 +98,7 @@ Rezultat: stabilna prezentacja.
 - Slajd demo.
 - Slajd architektury.
 - Slajd wartosci biznesowej.
-- Slajd: czego potrzebujemy od Taurona, aby przejsc do produkcji.
+- Slajd: czego potrzebujemy od OSD, aby przejsc do produkcji.
 
 Rezultat: spojna historia, bez udawania dostepu do niepublicznych danych.
 
@@ -111,7 +113,7 @@ Rekomendowany wariant na hackathon:
 
 ## Podzial rol
 
-- Data/ML: dane pogodowe, model PV/wiatr, walidacja.
+- Data/ML: zaufane dane pogodowe, model PV/wiatr, walidacja.
 - Backend/Data engineering: pipeline pobierania i normalizacji danych.
 - Frontend/Data viz: mapa, wykresy, timeline.
 - Product/Pitch: narracja, biznes, ograniczenia danych, prezentacja.
@@ -124,12 +126,12 @@ Projekt jest gotowy do pokazania, gdy:
 - jest jeden wybrany obszar testowy,
 - dashboard pokazuje prognoze godzinowa,
 - kazdy punkt/obszar ma risk score,
-- pitch jasno rozdziela dane publiczne od danych wymaganych od Taurona,
+- pitch jasno rozdziela dane publiczne, syntetyczne scenariusze i dane wymagane od OSD,
 - repo zawiera instrukcje uruchomienia i zrodla danych.
 
 ## Najwieksze ryzyka
 
-- Brak danych sieciowych nN/SN: rozwiazanie jako proxy + jasne zalozenia.
+- Brak danych sieciowych nN/SN: rozwiazanie jako syntetyczny scenariusz + proxy + jasne zalozenia.
 - Zbyt ambitny zakres: zaczac od PV-only.
 - Zbyt duzo czasu na integracje API: dopuscic zapisane probki danych.
 - Brak walidacji: pokazac baseline i metryki nawet na ograniczonym zbiorze.
@@ -141,6 +143,6 @@ Po utworzeniu repo:
 1. Wybrac finalny stack.
 2. Dodac skrypt `fetch_weather.py`.
 3. Dodac notebook `01_baseline_forecast.ipynb`.
-4. Dodac prosty dashboard.
-5. Zbudowac pierwsza probke danych dla 3-5 lokalizacji.
-
+4. Dodac generator `synthetic_grid_constraints.csv`.
+5. Dodac prosty dashboard.
+6. Zbudowac pierwsza probke danych dla lokalizacji oddzialow Tauron Dystrybucja.
