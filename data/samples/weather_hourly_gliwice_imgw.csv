@@ -1,0 +1,2 @@
+timestamp,location_id,temperature_c,wind_speed_ms,wind_direction_deg,relative_humidity_pct,precipitation_mm,pressure_hpa,cloud_cover_pct,solar_radiation_wm2,source,source_station,source_station_id,source_url,fetched_at,data_kind,trust_status
+2026-04-17T19:00:00+02:00,gliwice,11.8,0.278,350,38.7,0.01,1022.2,,,IMGW-PIB public synop API,Katowice,12560,https://danepubliczne.imgw.pl/api/data/synop/station/katowice,2026-04-17T22:02:41+02:00,observation,official_public_imgw

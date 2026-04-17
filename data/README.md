@@ -48,7 +48,8 @@ Pierwszy kompletny, maly dataset demonstracyjny jest oparty o Gliwice:
 - `mv_line_geometries_gliwice_sample.geojson` - 5 publicznych/proxy odcinkow linii SN z OSM.
 - `synthetic_mv_feeders_gliwice.csv` - 5 syntetycznych feederow SN z limitami i mocami demo.
 - `pv_orientation_mix_gliwice.csv` - syntetyczny miks orientacji PV per feeder.
-- `weather_hourly_gliwice_demo.csv` - 24 godziny pogody demo, do podmiany na IMGW-PIB.
+- `weather_hourly_gliwice_imgw.csv` - oficjalna publiczna obserwacja IMGW-PIB ze stacji Katowice dla POC Gliwice.
+- `weather_hourly_gliwice_demo.csv` - 24 godziny projekcji demo opartej o obserwacje IMGW-PIB; promieniowanie i zachmurzenie sa nadal modelowane do POC.
 - `generation_forecast_gliwice_demo.csv` - 24h symulowanej generacji PV per feeder.
 - `demand_proxy_gliwice_demo.csv` - 24h syntetycznego popytu per feeder.
 - `synthetic_grid_constraints_gliwice_demo.csv` - 24h syntetycznych ograniczen/przeciazen.
@@ -57,5 +58,6 @@ Pierwszy kompletny, maly dataset demonstracyjny jest oparty o Gliwice:
 Pliki mozna odtworzyc komenda:
 
 ```bash
+python3 data/fetch_imgw_weather.py
 python3 data/build_sample_datasets.py
 ```

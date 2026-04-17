@@ -163,34 +163,66 @@ def build_feeders(features: list[dict[str, Any]]) -> tuple[list[dict[str, Any]],
     return feeder_rows, orientation_rows
 
 
-def weather_at(hour: int) -> dict[str, Any]:
+def read_imgw_seed(path: Path) -> dict[str, Any] | None:
+    if not path.exists():
+        return None
+    with path.open(newline="", encoding="utf-8") as handle:
+        rows = list(csv.DictReader(handle))
+    return rows[0] if rows else None
+
+
+def weather_at(hour: int, imgw_seed: dict[str, Any] | None) -> dict[str, Any]:
     daylight = max(0.0, math.sin(math.pi * (hour - 5) / 15))
-    temperature = 8.5 + 8.0 * max(0.0, math.sin(math.pi * (hour - 6) / 15))
-    wind = 2.2 + 1.1 * max(0.0, math.sin(math.pi * (hour - 3) / 18))
+    base_temperature = 8.5
+    base_wind = 2.2
+    base_humidity = None
+    if imgw_seed:
+        base_temperature = float(imgw_seed["temperature_c"])
+        base_wind = float(imgw_seed["wind_speed_ms"])
+        base_humidity = imgw_seed.get("relative_humidity_pct")
+
+    temperature = base_temperature - 2.0 + 8.0 * max(0.0, math.sin(math.pi * (hour - 6) / 15))
+    wind = max(0.1, base_wind + 1.1 * max(0.0, math.sin(math.pi * (hour - 3) / 18)))
     cloud = 68 - 42 * daylight + 8 * math.sin(math.pi * hour / 6)
     radiation = 760 * daylight * (1 - max(0, min(100, cloud)) / 130)
     return {
         "temperature_c": round(temperature, 2),
         "wind_speed_ms": round(wind, 2),
+        "relative_humidity_pct": "" if base_humidity in (None, "") else base_humidity,
         "cloud_cover_pct": round(max(5, min(95, cloud)), 1),
         "solar_radiation_wm2": round(max(0, radiation), 1),
     }
 
 
-def build_weather() -> list[dict[str, Any]]:
+def build_weather(imgw_seed: dict[str, Any] | None) -> list[dict[str, Any]]:
     rows = []
     for offset in range(24):
         ts = START_TS + timedelta(hours=offset)
-        values = weather_at(ts.hour)
+        values = weather_at(ts.hour, imgw_seed)
+        if imgw_seed:
+            source = "IMGW-PIB public synop API seeded demo projection"
+            source_url = imgw_seed["source_url"]
+            fetched_at = imgw_seed["fetched_at"]
+            data_kind = "forecast_demo_seeded_by_imgw_observation"
+            trust_status = "imgw_observation_plus_demo_projection"
+        else:
+            source = "synthetic_demo_pending_imgw"
+            source_url = "https://dane.imgw.pl"
+            fetched_at = iso(FETCHED_AT)
+            data_kind = "forecast_demo"
+            trust_status = "synthetic_demo"
         rows.append(
             {
                 "timestamp": iso(ts),
                 "location_id": "gliwice",
                 **values,
-                "source": "synthetic_demo_pending_imgw",
-                "source_url": "https://dane.imgw.pl",
-                "fetched_at": iso(FETCHED_AT),
-                "data_kind": "forecast_demo",
+                "source": source,
+                "source_station": "" if not imgw_seed else imgw_seed["source_station"],
+                "source_station_id": "" if not imgw_seed else imgw_seed["source_station_id"],
+                "source_url": source_url,
+                "fetched_at": fetched_at,
+                "data_kind": data_kind,
+                "trust_status": trust_status,
             }
         )
     return rows
@@ -346,6 +378,11 @@ def parse_args() -> argparse.Namespace:
         default="data/samples",
         help="Directory for generated sample CSVs.",
     )
+    parser.add_argument(
+        "--imgw-weather",
+        default="data/samples/weather_hourly_gliwice_imgw.csv",
+        help="Optional trusted IMGW weather CSV used to seed the 24h demo projection.",
+    )
     return parser.parse_args()
 
 
@@ -353,8 +390,9 @@ def main() -> None:
     args = parse_args()
     output_dir = Path(args.output_dir)
     geojson = read_geojson(Path(args.mv_lines))
+    imgw_seed = read_imgw_seed(Path(args.imgw_weather))
     feeders, orientations = build_feeders(geojson["features"])
-    weather_rows = build_weather()
+    weather_rows = build_weather(imgw_seed)
     generation, demand, constraints, risk = build_hourly_outputs(feeders, orientations, weather_rows)
 
     write_csv(
@@ -399,12 +437,16 @@ def main() -> None:
             "location_id",
             "temperature_c",
             "wind_speed_ms",
+            "relative_humidity_pct",
             "cloud_cover_pct",
             "solar_radiation_wm2",
             "source",
+            "source_station",
+            "source_station_id",
             "source_url",
             "fetched_at",
             "data_kind",
+            "trust_status",
         ],
         weather_rows,
     )
