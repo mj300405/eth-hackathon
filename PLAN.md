@@ -6,6 +6,28 @@ Stan dokumentu: 2026-04-17
 
 Zbudowac hackathonowy demonstrator systemu, ktory prognozuje produkcje energii z PV i wiatru oraz wyznacza lokalny wskaznik ryzyka problemow z integracja OZE w sieci dystrybucyjnej.
 
+## Kontekst branżowy – wizja Taurona
+
+Prezes Taurona, **Grzegorz Lot**, podczas Rady Programowej podkreślał kluczowe wyzwania i kierunki rozwoju:
+
+> "Perspektywa klient, digitalizacja, kwestia jak rynku, regulacji oraz oczywiście zmian technologicznych to są takie wydarzenia, które ściągną tutaj wiele osób."
+
+> "Każda kolejna rada programowa to duża dynamika i ścieranie się różnych poglądów. Rozliczamy dyskusję o przyszłości od tego, żeby podsumować co udało się zrealizować z naszych obietnic, deklaracji w poprzednich wydarzeniach."
+
+*(powiedział po Radzie programowej EuroPower & OZE power 2026)*
+
+W debacie „Transformacja energetyczna jako wzmacnianie polskiej gospodarki - między ambicją a realizmem" prezes Lot wskazał na kluczowe wyzwania operacyjne:
+
+> "Zielona energia, tania energia i dostępna energia to są takie krytyczne czynniki sukcesu do tego, żeby gospodarka się rozwijała."
+
+> "Sztuką jest to, żeby w maksymalnym stopniu powiązać ze sobą profil zużycia energii elektrycznej przez klienta z profilem produkcyjnym. Gdy będziemy potrafili te dwie rzeczy połączyć, cena energii elektrycznej będzie najniższa na świecie."
+
+> "Musimy z pokorą podchodzić do tego, że nie wszystko udaje się zrobić od razu. Transformacja to nie wykonanie jednego, wielkiego skoku. To setki drobnych kroków, które przenoszą nas w świat nowej energii."
+
+*(źródło: PAP MediaRoom, 42. edycja EuroPOWER & OZE POWER)*
+
+Nasz projekt wpisuje się bezpośrednio w te priorytety: **digitalizacja** procesów OSD, wykorzystanie **zmian technologicznych** (AI, predykcja), odpowiedź na **wyzwania regulacyjne** związane z przyłączaniem OZE oraz **optymalizacja dopasowania profilu produkcji do zużycia** - dokładnie to, o czym mówi prezes Lot.
+
 ## Hipoteza
 
 Jesli polaczymy zaufane prognozy meteorologiczne, historyczna generacje OZE, publiczne informacje o dostepnych mocach przylaczeniowych i syntetyczne scenariusze ograniczen, mozemy pokazac Tauron Dystrybucja uzyteczny model predykcyjny dla OSD. Po formalnym dolaczeniu bezpiecznych danych OSD ten sam model moze zostac rozszerzony do poziomu operacyjnego.
