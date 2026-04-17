@@ -41,12 +41,12 @@ Odpowiada za:
 
 Proponowane pliki:
 
-- `src/data/fetch_weather.py`
+- `data/fetch_weather.py`
 - `data/fetch_mv_lines.py`
-- `src/data/fetch_pvgis.py`
-- `src/data/fetch_pse.py`
+- `data/fetch_pvgis.py`
+- `data/fetch_pse.py`
 - `data/build_sample_datasets.py`
-- `src/data/build_dataset.py`
+- `data/build_dataset.py`
 
 ### 2. Forecasting
 
@@ -59,8 +59,8 @@ Odpowiada za:
 
 Proponowane pliki:
 
-- `src/models/pv_baseline.py`
-- `src/models/wind_baseline.py`
+- `model/pv_baseline.py`
+- `model/wind_baseline.py`
 - `notebooks/01_baseline_forecast.ipynb`
 
 ### 3. Risk scoring
@@ -85,9 +85,9 @@ Gdzie:
 
 Proponowane pliki:
 
-- `src/scoring/risk_score.py`
-- `src/scoring/build_grid_proxy.py`
-- `src/scoring/recommendations.py`
+- `model/risk_score.py`
+- `model/build_grid_proxy.py`
+- `model/recommendations.py`
 
 ### 4. API albo dashboard
 
@@ -124,17 +124,21 @@ GET /recommendations?location_id=...
 ├── data/
 │   ├── raw/
 │   ├── processed/
+│   ├── samples/
+│   ├── fetch_mv_lines.py
+│   ├── build_sample_datasets.py
 │   └── README.md
+├── model/
+│   ├── pv_baseline.py
+│   ├── risk_score.py
+│   └── recommendations.py
+├── api/
+│   └── FastAPI backend
+├── app/
+│   └── dashboard or frontend
 ├── notebooks/
 │   ├── 01_baseline_forecast.ipynb
 │   └── README.md
-├── src/
-│   ├── data/
-│   ├── models/
-│   ├── scoring/
-│   └── README.md
-└── app/
-    └── dashboard or frontend
 ```
 
 ## Minimalna wersja demo
