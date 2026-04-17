@@ -71,3 +71,7 @@ W pitchu mowimy to wprost: publiczne dane wystarczaja do MVP, a dane Taurona odb
 - SQLite / DuckDB / Postgres: dane demonstracyjne.
 
 Na start wystarczy prosty wariant: notebook + CSV + Streamlit albo FastAPI + frontend.
+
+
+## Licencja
+Projekt udostępniany jest na licencji GPLv3. Szczegóły znajdziesz w pliku [LICENSE](LICENSE).
