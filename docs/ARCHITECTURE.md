@@ -41,12 +41,17 @@ Odpowiada za:
 
 Proponowane pliki:
 
-- `data/fetch_weather.py`
+- `data/fetch_imgw_weather.py`
 - `data/fetch_mv_lines.py`
 - `data/fetch_pvgis.py`
-- `data/fetch_pse.py`
 - `data/build_sample_datasets.py`
-- `data/build_dataset.py`
+
+Kolejne adaptery danych, jesli beda potrzebne po POC:
+
+- `data/fetch_tauron_capacity.py`
+- `data/fetch_tauron_flexibility.py`
+- `data/fetch_pse.py`
+- `data/fetch_ure_gus_context.py`
 
 ### 2. Forecasting
 
@@ -148,7 +153,8 @@ Najmniejszy sensowny wariant:
 - jeden plik `locations.csv` z 11 lokalizacjami oddzialow Tauron Dystrybucja,
 - jedna probka `mv_line_geometries.geojson` z publicznym/proxy przebiegiem linii SN,
 - jeden plik `synthetic_mv_feeders.csv` z parametrami demo,
-- jeden skrypt pobierajacy pogode,
+- jeden skrypt pobierajacy pogode z IMGW-PIB,
+- jeden skrypt pobierajacy profil PV z PVGIS/JRC,
 - jeden notebook trenujacy baseline,
 - jeden skrypt liczacy `risk_score`,
 - Streamlit dashboard z mapa.

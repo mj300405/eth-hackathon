@@ -18,6 +18,16 @@ data/
 - Probki demo trzymac male i opisane.
 - Przy kazdym zbiorze zapisac zrodlo i date pobrania.
 
+## API i zrodla uzyte teraz
+
+Aktualna probka POC korzysta z trzech publicznych zrodel/API:
+
+- `data/fetch_imgw_weather.py` pobiera oficjalna publiczna obserwacje z IMGW-PIB public synop API.
+- `data/fetch_pvgis.py` pobiera referencyjny profil PV z PVGIS/JRC `seriescalc` API.
+- `data/fetch_mv_lines.py` pobiera publiczne/proxy geometrie linii SN z OSM/Overpass API.
+
+Tauron dostepne moce, Tauron uslugi elastycznosci, PSE, URE i GUS/TERYT sa opisane jako kolejne zrodla kontekstowe, ale nie sa jeszcze uzyte w aktualnej probce POC.
+
 ## Minimalne pliki demo
 
 Na start warto dodac:

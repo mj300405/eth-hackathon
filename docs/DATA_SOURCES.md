@@ -14,6 +14,18 @@ Ze wzgledu na infrastrukture krytyczna dane pogodowe dla wersji prezentowanej OS
 
 Ze wzgledu na unbundling projekt jest kierowany wylacznie do Tauron Dystrybucja jako OSD. Nie uzywamy danych sprzedazowych i nie projektujemy wymiany informacji ze spolkami sprzedazy energii.
 
+## API i zrodla faktycznie uzyte w POC
+
+| Zrodlo/API | Czy uzyte teraz | Skrypt | Plik wynikowy w repo | Status danych |
+|---|---|---|---|---|
+| IMGW-PIB public synop API | tak | `data/fetch_imgw_weather.py` | `data/samples/weather_hourly_gliwice_imgw.csv` | oficjalne publiczne zrodlo IMGW; w POC obserwacja ze stacji Katowice dla obszaru Gliwic |
+| PVGIS/JRC `seriescalc` API | tak | `data/fetch_pvgis.py` | `data/samples/pvgis_profile_gliwice.csv` | publiczny referencyjny profil PV; uzyty do ksztaltu generacji PV w demo |
+| OSM/Overpass API | tak | `data/fetch_mv_lines.py` | `data/samples/mv_line_geometries_gliwice_sample.geojson` | publiczne proxy geometrii linii SN; nie jest oficjalna topologia Tauron Dystrybucja |
+| Tauron - dostepne moce przylaczeniowe | nie teraz | planowany adapter | brak | publiczny kontekst sieciowy do pozniejszego dodania, nie etykieta przeciazen |
+| Tauron - uslugi elastycznosci | nie teraz | planowany adapter | brak | publiczny kontekst obszarow ograniczen, nie historia realnych przeciazen |
+| PSE, URE, GUS/TERYT | nie teraz | planowane adaptery | brak | zrodla kontekstowe/walidacyjne, nie krytyczne dla pierwszego kompletnego POC |
+| Open-Meteo, NASA POWER | nie | brak | brak | tylko fallback developerski; nie uzywamy jako glownego meteo dla OSD |
+
 ## Klasyfikacja zaufania danych
 
 | Obszar danych | MVP | Status zaufania w MVP | Produkcja | Jak komunikowac |
@@ -32,18 +44,18 @@ Ze wzgledu na unbundling projekt jest kierowany wylacznie do Tauron Dystrybucja 
 | Dataset | Status w repo | Docelowy plik | Zrodlo | Rola w MVP |
 |---|---|---|---|---|
 | `locations` | gotowy jako probka | `data/samples/locations.csv` | Tauron Dystrybucja - lista oddzialow | lista lokalizacji demo zgodna z obszarem Taurona |
-| `mv_line_geometries` | probka OSM dla Gliwic | `data/processed/mv_line_geometries.geojson` | BDOT10k/GUGiK albo OpenStreetMap | publiczny/proxy przebieg linii sredniego napiecia |
-| `synthetic_mv_feeders` | brak | `data/processed/synthetic_mv_feeders.csv` | dataset wyliczany z geometrii SN | syntetyczne obszary feederow SN do POC |
+| `mv_line_geometries` | probka OSM/Overpass dla Gliwic | `data/samples/mv_line_geometries_gliwice_sample.geojson` | BDOT10k/GUGiK albo OpenStreetMap | publiczny/proxy przebieg linii sredniego napiecia |
+| `synthetic_mv_feeders` | gotowy jako probka Gliwice | `data/samples/synthetic_mv_feeders_gliwice.csv` | dataset wyliczany z geometrii SN | syntetyczne obszary feederow SN do POC |
 | `pv_installation_assumptions` | gotowy jako probka | `data/samples/pv_installation_assumptions.csv` | zalozenia demo / PVGIS | parametry instalacji uzyte do symulacji PV |
-| `weather_hourly` | probka IMGW dla Gliwic/Katowic | `data/processed/weather_hourly.csv` | IMGW-PIB albo zatwierdzony dostawca meteo | zaufane wejscie do prognozy PV/wiatr |
-| `generation_forecast` | probka PVGIS dla Gliwic | `data/processed/generation_forecast.csv` | PVGIS albo model z meteo IMGW-PIB | symulowana godzinowa produkcja OZE dla POC |
-| `synthetic_grid_constraints` | brak | `data/processed/synthetic_grid_constraints.csv` | symulacja demo | syntetyczne scenariusze przeciazen/ograniczen |
+| `weather_hourly` | probka IMGW dla Gliwic/Katowic plus projekcja demo | `data/samples/weather_hourly_gliwice_imgw.csv`, `data/samples/weather_hourly_gliwice_demo.csv` | IMGW-PIB albo zatwierdzony dostawca meteo | zaufane wejscie meteo i demo projection do prognozy PV/wiatr |
+| `generation_forecast` | probka Gliwice skalowana z PVGIS | `data/samples/generation_forecast_gliwice_demo.csv` | PVGIS albo model z meteo IMGW-PIB | symulowana godzinowa produkcja OZE dla POC |
+| `synthetic_grid_constraints` | gotowy jako probka Gliwice | `data/samples/synthetic_grid_constraints_gliwice_demo.csv` | symulacja demo | syntetyczne scenariusze przeciazen/ograniczen |
 | `tauron_flexibility_context` | opcjonalny | `data/processed/tauron_flexibility_context.csv` | mapy elastycznosci Tauron Dystrybucja | publiczny kontekst, nie etykieta realnych przeciazen |
 | `tauron_connection_capacity` | brak | `data/processed/tauron_connection_capacity.csv` | dostepne moce przylaczeniowe Tauron Dystrybucja | proxy marginesu przylaczeniowego |
-| `oze_density` | brak | `data/processed/oze_density.csv` | URE / GUS / dane lokalne | proxy gestosci prosumentow i OZE |
-| `demand_proxy` | brak | `data/processed/demand_proxy.csv` | GUS / profil dobowy / zalozenia demo | proxy lokalnego popytu |
-| `grid_proxy` | brak | `data/processed/grid_proxy.csv` | dataset wyliczany | laczy constraint, capacity, OZE density i popyt |
-| `risk_hourly` | brak | `data/processed/risk_hourly.csv` | dataset wyliczany | finalny wynik do mapy i dashboardu |
+| `oze_density` | zaszyty w probce feederow | `data/samples/synthetic_mv_feeders_gliwice.csv` | URE / GUS / dane lokalne albo zalozenia demo | proxy gestosci prosumentow i OZE |
+| `demand_proxy` | gotowy jako probka Gliwice | `data/samples/demand_proxy_gliwice_demo.csv` | GUS / profil dobowy / zalozenia demo | proxy lokalnego popytu |
+| `grid_proxy` | nie materializowany osobno | brak osobnego pliku | dataset wyliczany | logika polaczenia jest obecnie w feederach, constraints i risk score |
+| `risk_hourly` | gotowy jako probka Gliwice | `data/samples/risk_hourly_gliwice_demo.csv` | dataset wyliczany | finalny wynik do mapy i dashboardu |
 | `pse_oze_generation` | opcjonalny | `data/raw/pse_oze_generation.csv` | PSE raporty | walidacja trendow PV/wiatr na poziomie kraju |
 
 ## Dane publiczne
@@ -298,7 +310,7 @@ Format preferowany: GeoJSON.
 
 ## Plan pobierania danych
 
-Na start:
+Stan aktualny POC obejmuje kroki 1-7. Kroki 8-10 sa nastepnym etapem, jesli bedziemy chcieli dodac wiecej publicznego kontekstu Taurona/PSE/URE/GUS.
 
 1. Uzyj `data/samples/locations.csv` jako listy 11 oddzialow Tauron Dystrybucja.
 2. Pobierz publiczne geometrie linii SN z BDOT10k/GUGiK albo OSM i zapisz jako `mv_line_geometries.geojson`.
@@ -308,7 +320,7 @@ Na start:
 6. Uzyj PVGIS albo prostego modelu PV z promieniowania do wyznaczenia symulowanej produkcji PV dla feederow SN.
 7. Wygeneruj `synthetic_grid_constraints.csv` jako jawny scenariusz przeciazen demo.
 8. Opcjonalnie wprowadz publiczny kontekst Taurona o zapotrzebowaniu na uslugi elastycznosci.
-9. Wprowadz recznie lub zeskrob dostepne moce przylaczeniowe Taurona.
+9. Opcjonalnie wprowadz recznie albo przez adapter publiczne dostepne moce przylaczeniowe Taurona.
 10. Dodaj proxy gestosci OZE z URE/GUS albo ustaw wersje demonstracyjna.
 11. Dodaj `demand_proxy.csv` jako prosty profil popytu.
 12. Zapisz wszystko do `data/processed/`.

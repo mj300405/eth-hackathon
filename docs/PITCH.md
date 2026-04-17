@@ -14,10 +14,10 @@ Projekt dotyczy dystrybucji energii, nie sprzedazy. Nie zakladamy wymiany danych
 
 Budujemy model, ktory laczy:
 
-- zaufane prognozy pogody z IMGW-PIB albo zatwierdzonego dostawcy,
-- publiczne przebiegi linii sredniego napiecia z BDOT10k/GUGiK albo OSM jako proxy geometrii,
-- historyczna generacje OZE,
-- publiczne dane o dostepnych mocach,
+- zaufane dane pogodowe z IMGW-PIB albo zatwierdzonego dostawcy,
+- publiczne przebiegi linii sredniego napiecia z BDOT10k/GUGiK albo OSM/Overpass jako proxy geometrii,
+- publiczny profil PV z PVGIS/JRC jako ksztalt symulowanej generacji,
+- publiczne dane o dostepnych mocach jako pozniejszy kontekst sieciowy,
 - syntetyczne scenariusze ograniczen sieciowych,
 - proxy lokalnego popytu i gestosci OZE.
 
@@ -40,15 +40,21 @@ Rozwoj prosumeryzmu powoduje, ze siec dystrybucyjna musi byc zarzadzana bardziej
 
 ## Co mamy z danych publicznych
 
-Mozemy zbudowac wiarygodny demonstrator:
+W aktualnym POC realnie uzywamy trzech publicznych zrodel/API:
 
-- zaufane dane pogodowe,
-- publiczne/proxy przebiegi linii sredniego napiecia,
-- symulacje PV,
-- generacja OZE na poziomie systemu,
-- publiczne informacje o dostepnych mocach,
-- dane o rozwoju mikroinstalacji,
+- IMGW-PIB public synop API jako oficjalne publiczne zrodlo meteo,
+- PVGIS/JRC `seriescalc` API jako referencyjny profil produkcji PV,
+- OSM/Overpass API jako publiczne proxy przebiegu linii sredniego napiecia.
+
+Na tej podstawie mamy wiarygodny demonstrator:
+
+- obserwacja IMGW-PIB jako zaufany seed meteo,
+- publiczne/proxy przebiegi linii sredniego napiecia dla Gliwic,
+- profil PVGIS skalowany do syntetycznych feederow SN,
+- syntetyczny popyt lokalny i gestosc OZE,
 - syntetyczne scenariusze ograniczen, jasno oznaczone jako demo.
+
+Publiczne dane Taurona o dostepnych mocach i uslugach elastycznosci oraz dane PSE/URE/GUS traktujemy jako kolejny krok integracji, nie jako element juz uzyty w pierwszej probce POC.
 
 Nie uzywamy publicznej geometrii linii jako oficjalnej topologii Tauron Dystrybucja. W MVP przebieg linii daje realizm przestrzenny, a parametry pracy linii, obciazenia, generacja lokalna i przeciazenia sa symulowane.
 

@@ -30,9 +30,9 @@ Projekt jest kierowany wylacznie do Tauron Dystrybucja jako OSD. Nie jest narzed
 - Opcjonalnie prognoza produkcji wiatrowej.
 - Dane pogodowe z IMGW-PIB albo innego certyfikowanego/zatwierdzonego dostawcy.
 - Publiczne geometrie linii sredniego napiecia z BDOT10k/GUGiK albo OSM jako proxy przebiegu linii.
-- Dane historycznej generacji OZE jako punkt odniesienia.
+- Publiczny profil PVGIS/JRC jako punkt odniesienia do symulowanej generacji PV.
 - Syntetyczne dane o przeciazeniach/ograniczeniach jako scenariusz demo.
-- Publiczne dane Taurona o mapach elastycznosci i dostepnych mocach jako kontekst, nie jako historia realnych przeciazen.
+- Publiczne dane Taurona o mapach elastycznosci i dostepnych mocach jako opcjonalny kontekst, nie jako historia realnych przeciazen.
 - Mapa i ranking obszarow wedlug ryzyka.
 - Prosty model ML albo model hybrydowy: fizyczny + statystyczny.
 
