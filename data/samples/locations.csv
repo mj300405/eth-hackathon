@@ -1,0 +1,12 @@
+location_id,name,admin_level,lat,lon,operator_area,tauron_branch,voivodeship,source_url,notes
+bedzin,Bedzin,branch_city,50.3261,19.1257,Tauron,Oddzial w Bedzinie,slaskie,https://www.tauron-dystrybucja.pl/kontakt/oddzialy,oficjalna lokalizacja oddzialu Tauron Dystrybucja
+bielsko_biala,Bielsko-Biala,branch_city,49.8224,19.0584,Tauron,Oddzial w Bielsku-Bialej,slaskie,https://www.tauron-dystrybucja.pl/kontakt/oddzialy,oficjalna lokalizacja oddzialu Tauron Dystrybucja
+czestochowa,Czestochowa,branch_city,50.8118,19.1203,Tauron,Oddzial w Czestochowie,slaskie,https://www.tauron-dystrybucja.pl/kontakt/oddzialy,oficjalna lokalizacja oddzialu Tauron Dystrybucja
+gliwice,Gliwice,branch_city,50.2945,18.6714,Tauron,Oddzial w Gliwicach,slaskie,https://www.tauron-dystrybucja.pl/kontakt/oddzialy,oficjalna lokalizacja oddzialu Tauron Dystrybucja
+jelenia_gora,Jelenia Gora,branch_city,50.9044,15.7194,Tauron,Oddzial w Jeleniej Gorze,dolnoslaskie,https://www.tauron-dystrybucja.pl/kontakt/oddzialy,oficjalna lokalizacja oddzialu Tauron Dystrybucja
+krakow,Krakow,branch_city,50.0647,19.9450,Tauron,Oddzial w Krakowie,malopolskie,https://www.tauron-dystrybucja.pl/kontakt/oddzialy,oficjalna lokalizacja oddzialu Tauron Dystrybucja
+legnica,Legnica,branch_city,51.2070,16.1553,Tauron,Oddzial w Legnicy,dolnoslaskie,https://www.tauron-dystrybucja.pl/kontakt/oddzialy,oficjalna lokalizacja oddzialu Tauron Dystrybucja
+opole,Opole,branch_city,50.6751,17.9213,Tauron,Oddzial w Opolu,opolskie,https://www.tauron-dystrybucja.pl/kontakt/oddzialy,oficjalna lokalizacja oddzialu Tauron Dystrybucja
+tarnow,Tarnow,branch_city,50.0121,20.9858,Tauron,Oddzial w Tarnowie,malopolskie,https://www.tauron-dystrybucja.pl/kontakt/oddzialy,oficjalna lokalizacja oddzialu Tauron Dystrybucja
+walbrzych,Walbrzych,branch_city,50.7840,16.2844,Tauron,Oddzial w Walbrzychu,dolnoslaskie,https://www.tauron-dystrybucja.pl/kontakt/oddzialy,oficjalna lokalizacja oddzialu Tauron Dystrybucja
+wroclaw,Wroclaw,branch_city,51.1079,17.0385,Tauron,Oddzial we Wroclawiu,dolnoslaskie,https://www.tauron-dystrybucja.pl/kontakt/oddzialy,oficjalna lokalizacja oddzialu Tauron Dystrybucja

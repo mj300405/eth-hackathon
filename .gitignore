@@ -1,0 +1,25 @@
+# System
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Local data
+data/raw/
+data/processed/
+*.parquet
+*.duckdb
+
+# Environment
+.env
+.env.*
+

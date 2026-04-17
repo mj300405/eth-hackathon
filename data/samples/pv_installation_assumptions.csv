@@ -1,0 +1,12 @@
+location_id,pv_capacity_kwp,tilt_deg,azimuth_deg,system_loss_pct,assumption_type,notes
+bedzin,1000,35,0,14,demo,porownawczy profil PV 1 MWp dla oddzialu Tauron
+bielsko_biala,1000,35,0,14,demo,porownawczy profil PV 1 MWp dla oddzialu Tauron
+czestochowa,1000,35,0,14,demo,porownawczy profil PV 1 MWp dla oddzialu Tauron
+gliwice,1000,35,0,14,demo,porownawczy profil PV 1 MWp dla oddzialu Tauron
+jelenia_gora,1000,35,0,14,demo,porownawczy profil PV 1 MWp dla oddzialu Tauron
+krakow,1000,35,0,14,demo,porownawczy profil PV 1 MWp dla oddzialu Tauron
+legnica,1000,35,0,14,demo,porownawczy profil PV 1 MWp dla oddzialu Tauron
+opole,1000,35,0,14,demo,porownawczy profil PV 1 MWp dla oddzialu Tauron
+tarnow,1000,35,0,14,demo,porownawczy profil PV 1 MWp dla oddzialu Tauron
+walbrzych,1000,35,0,14,demo,porownawczy profil PV 1 MWp dla oddzialu Tauron
+wroclaw,1000,35,0,14,demo,porownawczy profil PV 1 MWp dla oddzialu Tauron
