@@ -171,6 +171,13 @@ def read_imgw_seed(path: Path) -> dict[str, Any] | None:
     return rows[0] if rows else None
 
 
+def read_pvgis_profile(path: Path) -> list[dict[str, Any]]:
+    if not path.exists():
+        return []
+    with path.open(newline="", encoding="utf-8") as handle:
+        return list(csv.DictReader(handle))
+
+
 def weather_at(hour: int, imgw_seed: dict[str, Any] | None) -> dict[str, Any]:
     daylight = max(0.0, math.sin(math.pi * (hour - 5) / 15))
     base_temperature = 8.5
@@ -278,6 +285,7 @@ def build_hourly_outputs(
     feeders: list[dict[str, Any]],
     orientations: list[dict[str, Any]],
     weather_rows: list[dict[str, Any]],
+    pvgis_profile: list[dict[str, Any]],
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
     orientation_by_feeder = {row["feeder_id"]: row for row in orientations}
     generation_rows: list[dict[str, Any]] = []
@@ -296,7 +304,13 @@ def build_hourly_outputs(
         for weather in weather_rows:
             ts = weather["timestamp"]
             hour = datetime.fromisoformat(ts).hour
-            pv_kw = pv_capacity * 0.86 * solar_profile(hour, weather, orientation)
+            if pvgis_profile:
+                pvgis_row = pvgis_profile[hour % len(pvgis_profile)]
+                pv_kw = pv_capacity * float(pvgis_row["pv_kw_per_kwp"])
+                generation_basis = "pvgis_reference_profile_scaled_to_synthetic_feeder_kwp"
+            else:
+                pv_kw = pv_capacity * 0.86 * solar_profile(hour, weather, orientation)
+                generation_basis = "synthetic_pv_model_pending_pvgis"
             demand_kw = base_demand * demand_multiplier(feeder["area_type"], hour)
             reverse_flow_kw = max(0.0, pv_kw - demand_kw)
             overload_kw = max(0.0, reverse_flow_kw - reverse_limit)
@@ -322,7 +336,7 @@ def build_hourly_outputs(
                     "pv_kw": round(pv_kw, 2),
                     "wind_kw": 0,
                     "confidence": 0.62,
-                    "generation_basis": "synthetic_pv_model_pending_imgw",
+                    "generation_basis": generation_basis,
                 }
             )
             demand_rows.append(
@@ -383,6 +397,11 @@ def parse_args() -> argparse.Namespace:
         default="data/samples/weather_hourly_gliwice_imgw.csv",
         help="Optional trusted IMGW weather CSV used to seed the 24h demo projection.",
     )
+    parser.add_argument(
+        "--pvgis-profile",
+        default="data/samples/pvgis_profile_gliwice.csv",
+        help="Optional PVGIS reference profile CSV used for PV generation.",
+    )
     return parser.parse_args()
 
 
@@ -391,9 +410,15 @@ def main() -> None:
     output_dir = Path(args.output_dir)
     geojson = read_geojson(Path(args.mv_lines))
     imgw_seed = read_imgw_seed(Path(args.imgw_weather))
+    pvgis_profile = read_pvgis_profile(Path(args.pvgis_profile))
     feeders, orientations = build_feeders(geojson["features"])
     weather_rows = build_weather(imgw_seed)
-    generation, demand, constraints, risk = build_hourly_outputs(feeders, orientations, weather_rows)
+    generation, demand, constraints, risk = build_hourly_outputs(
+        feeders,
+        orientations,
+        weather_rows,
+        pvgis_profile,
+    )
 
     write_csv(
         output_dir / "synthetic_mv_feeders_gliwice.csv",

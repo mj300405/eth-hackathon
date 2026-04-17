@@ -1,0 +1,25 @@
+timestamp,pv_kw_per_kwp,global_irradiance_wm2,sun_height_deg,temperature_c,wind_speed_ms,source,source_url,data_kind
+2020-04-18T00:10:00+00:00,0.0,0.0,0.0,6.16,3.38,PVGIS JRC seriescalc,https://re.jrc.ec.europa.eu/api/v5_3/seriescalc,reference_profile
+2020-04-18T01:10:00+00:00,0.0,0.0,0.0,5.69,3.31,PVGIS JRC seriescalc,https://re.jrc.ec.europa.eu/api/v5_3/seriescalc,reference_profile
+2020-04-18T02:10:00+00:00,0.0,0.0,0.0,5.1,3.31,PVGIS JRC seriescalc,https://re.jrc.ec.europa.eu/api/v5_3/seriescalc,reference_profile
+2020-04-18T03:10:00+00:00,0.0,0.0,0.0,4.53,3.31,PVGIS JRC seriescalc,https://re.jrc.ec.europa.eu/api/v5_3/seriescalc,reference_profile
+2020-04-18T04:10:00+00:00,0.00323,12.24,2.97,4.04,3.31,PVGIS JRC seriescalc,https://re.jrc.ec.europa.eu/api/v5_3/seriescalc,reference_profile
+2020-04-18T05:10:00+00:00,0.08811,143.6,12.45,4.76,2.83,PVGIS JRC seriescalc,https://re.jrc.ec.europa.eu/api/v5_3/seriescalc,reference_profile
+2020-04-18T06:10:00+00:00,0.30748,377.17,22.0,6.98,2.97,PVGIS JRC seriescalc,https://re.jrc.ec.europa.eu/api/v5_3/seriescalc,reference_profile
+2020-04-18T07:10:00+00:00,0.5124,609.82,31.19,9.6,3.24,PVGIS JRC seriescalc,https://re.jrc.ec.europa.eu/api/v5_3/seriescalc,reference_profile
+2020-04-18T08:10:00+00:00,0.67493,822.2,39.47,11.61,2.83,PVGIS JRC seriescalc,https://re.jrc.ec.europa.eu/api/v5_3/seriescalc,reference_profile
+2020-04-18T09:10:00+00:00,0.77251,971.69,46.06,13.25,2.28,PVGIS JRC seriescalc,https://re.jrc.ec.europa.eu/api/v5_3/seriescalc,reference_profile
+2020-04-18T10:10:00+00:00,0.81761,1041.72,49.93,14.36,2.41,PVGIS JRC seriescalc,https://re.jrc.ec.europa.eu/api/v5_3/seriescalc,reference_profile
+2020-04-18T11:10:00+00:00,0.81866,1046.29,50.18,15.09,2.48,PVGIS JRC seriescalc,https://re.jrc.ec.europa.eu/api/v5_3/seriescalc,reference_profile
+2020-04-18T12:10:00+00:00,0.77306,985.36,46.76,15.6,2.28,PVGIS JRC seriescalc,https://re.jrc.ec.europa.eu/api/v5_3/seriescalc,reference_profile
+2020-04-18T13:10:00+00:00,0.65913,829.86,40.47,15.89,1.93,PVGIS JRC seriescalc,https://re.jrc.ec.europa.eu/api/v5_3/seriescalc,reference_profile
+2020-04-18T14:10:00+00:00,0.50872,633.66,32.37,15.94,1.59,PVGIS JRC seriescalc,https://re.jrc.ec.europa.eu/api/v5_3/seriescalc,reference_profile
+2020-04-18T15:10:00+00:00,0.3137,400.23,23.26,15.82,1.38,PVGIS JRC seriescalc,https://re.jrc.ec.europa.eu/api/v5_3/seriescalc,reference_profile
+2020-04-18T16:10:00+00:00,0.10546,168.65,13.74,15.44,1.66,PVGIS JRC seriescalc,https://re.jrc.ec.europa.eu/api/v5_3/seriescalc,reference_profile
+2020-04-18T17:10:00+00:00,0.00769,20.11,4.23,14.25,2.14,PVGIS JRC seriescalc,https://re.jrc.ec.europa.eu/api/v5_3/seriescalc,reference_profile
+2020-04-18T18:10:00+00:00,0.0,0.0,0.0,11.91,2.9,PVGIS JRC seriescalc,https://re.jrc.ec.europa.eu/api/v5_3/seriescalc,reference_profile
+2020-04-18T19:10:00+00:00,0.0,0.0,0.0,10.72,2.62,PVGIS JRC seriescalc,https://re.jrc.ec.europa.eu/api/v5_3/seriescalc,reference_profile
+2020-04-18T20:10:00+00:00,0.0,0.0,0.0,9.3,2.55,PVGIS JRC seriescalc,https://re.jrc.ec.europa.eu/api/v5_3/seriescalc,reference_profile
+2020-04-18T21:10:00+00:00,0.0,0.0,0.0,8.12,2.83,PVGIS JRC seriescalc,https://re.jrc.ec.europa.eu/api/v5_3/seriescalc,reference_profile
+2020-04-18T22:10:00+00:00,0.0,0.0,0.0,7.31,3.52,PVGIS JRC seriescalc,https://re.jrc.ec.europa.eu/api/v5_3/seriescalc,reference_profile
+2020-04-18T23:10:00+00:00,0.0,0.0,0.0,6.64,3.59,PVGIS JRC seriescalc,https://re.jrc.ec.europa.eu/api/v5_3/seriescalc,reference_profile

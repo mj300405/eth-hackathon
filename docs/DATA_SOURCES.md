@@ -36,7 +36,7 @@ Ze wzgledu na unbundling projekt jest kierowany wylacznie do Tauron Dystrybucja 
 | `synthetic_mv_feeders` | brak | `data/processed/synthetic_mv_feeders.csv` | dataset wyliczany z geometrii SN | syntetyczne obszary feederow SN do POC |
 | `pv_installation_assumptions` | gotowy jako probka | `data/samples/pv_installation_assumptions.csv` | zalozenia demo / PVGIS | parametry instalacji uzyte do symulacji PV |
 | `weather_hourly` | probka IMGW dla Gliwic/Katowic | `data/processed/weather_hourly.csv` | IMGW-PIB albo zatwierdzony dostawca meteo | zaufane wejscie do prognozy PV/wiatr |
-| `generation_forecast` | brak | `data/processed/generation_forecast.csv` | PVGIS albo model z meteo IMGW-PIB | symulowana godzinowa produkcja OZE dla POC |
+| `generation_forecast` | probka PVGIS dla Gliwic | `data/processed/generation_forecast.csv` | PVGIS albo model z meteo IMGW-PIB | symulowana godzinowa produkcja OZE dla POC |
 | `synthetic_grid_constraints` | brak | `data/processed/synthetic_grid_constraints.csv` | symulacja demo | syntetyczne scenariusze przeciazen/ograniczen |
 | `tauron_flexibility_context` | opcjonalny | `data/processed/tauron_flexibility_context.csv` | mapy elastycznosci Tauron Dystrybucja | publiczny kontekst, nie etykieta realnych przeciazen |
 | `tauron_connection_capacity` | brak | `data/processed/tauron_connection_capacity.csv` | dostepne moce przylaczeniowe Tauron Dystrybucja | proxy marginesu przylaczeniowego |
