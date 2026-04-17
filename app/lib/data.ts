@@ -1,3 +1,53 @@
+export interface HourlyGenerationData {
+  hour: string
+  solar: number
+  wind: number
+  total: number
+}
+
+export const hourlyGenerationData: HourlyGenerationData[] = [
+  { hour: "00:00", solar: 0, wind: 12.5, total: 12.5 },
+  { hour: "01:00", solar: 0, wind: 14.2, total: 14.2 },
+  { hour: "02:00", solar: 0, wind: 15.8, total: 15.8 },
+  { hour: "03:00", solar: 0, wind: 13.1, total: 13.1 },
+  { hour: "04:00", solar: 0, wind: 11.5, total: 11.5 },
+  { hour: "05:00", solar: 2.1, wind: 10.2, total: 12.3 },
+  { hour: "06:00", solar: 8.5, wind: 9.8, total: 18.3 },
+  { hour: "07:00", solar: 18.2, wind: 8.5, total: 26.7 },
+  { hour: "08:00", solar: 32.5, wind: 7.2, total: 39.7 },
+  { hour: "09:00", solar: 45.8, wind: 6.8, total: 52.6 },
+  { hour: "10:00", solar: 58.2, wind: 7.5, total: 65.7 },
+  { hour: "11:00", solar: 68.5, wind: 8.2, total: 76.7 },
+  { hour: "12:00", solar: 72.1, wind: 9.5, total: 81.6 },
+  { hour: "13:00", solar: 70.8, wind: 11.2, total: 82.0 },
+  { hour: "14:00", solar: 65.2, wind: 12.8, total: 78.0 },
+  { hour: "15:00", solar: 55.8, wind: 14.5, total: 70.3 },
+  { hour: "16:00", solar: 42.5, wind: 15.2, total: 57.7 },
+  { hour: "17:00", solar: 28.2, wind: 16.8, total: 45.0 },
+  { hour: "18:00", solar: 15.5, wind: 18.5, total: 34.0 },
+  { hour: "19:00", solar: 5.2, wind: 20.2, total: 25.4 },
+  { hour: "20:00", solar: 0.8, wind: 22.5, total: 23.3 },
+  { hour: "21:00", solar: 0, wind: 21.8, total: 21.8 },
+  { hour: "22:00", solar: 0, wind: 19.5, total: 19.5 },
+  { hour: "23:00", solar: 0, wind: 16.2, total: 16.2 },
+]
+
+export interface RiskyAreaData {
+  location: string
+  risk_score: number
+  risk_level: "NISKIE" | "SREDNIE" | "WYSOKIE"
+  peak_hour: string
+  expected_overload: number
+}
+
+export const riskyAreasData: RiskyAreaData[] = [
+  { location: "Kraków", risk_score: 78, risk_level: "WYSOKIE", peak_hour: "12:00", expected_overload: 23 },
+  { location: "Gliwice", risk_score: 72, risk_level: "WYSOKIE", peak_hour: "12:30", expected_overload: 18 },
+  { location: "Tarnów", risk_score: 68, risk_level: "WYSOKIE", peak_hour: "12:00", expected_overload: 15 },
+  { location: "Wrocław", risk_score: 65, risk_level: "SREDNIE", peak_hour: "13:00", expected_overload: 12 },
+  { location: "Częstochowa", risk_score: 58, risk_level: "SREDNIE", peak_hour: "12:30", expected_overload: 8 },
+]
+
 export interface LocationData {
   location_id: string
   name: string

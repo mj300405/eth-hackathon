@@ -7,6 +7,7 @@ import { LocationDetails } from "@/components/dashboard/location-details"
 import { Recommendations } from "@/components/dashboard/recommendations"
 import { LocationsTable } from "@/components/dashboard/locations-table"
 import { Footer } from "@/components/dashboard/footer"
+import { GenerationOverview } from "@/components/dashboard/generation-overview"
 import { locationsData, type LocationData } from "@/lib/data"
 import { Card, CardContent } from "@/components/ui/card"
 import { MapPin } from "lucide-react"
@@ -65,6 +66,11 @@ export default function Dashboard() {
               </Card>
             )}
           </div>
+        </div>
+
+        {/* Generation Overview Section */}
+        <div className="mt-6">
+          <GenerationOverview />
         </div>
 
         {/* Bottom Panel - Table */}
