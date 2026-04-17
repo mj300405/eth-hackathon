@@ -31,8 +31,10 @@ Dashboard / API
 
 Odpowiada za:
 
+- pobieranie publicznych/proxy geometrii linii SN,
 - pobieranie pogody,
 - pobieranie danych generacji,
+- budowanie syntetycznych feederow SN,
 - normalizacje czasu do jednej strefy,
 - walidacje brakow,
 - zapis danych przetworzonych.
@@ -40,9 +42,10 @@ Odpowiada za:
 Proponowane pliki:
 
 - `src/data/fetch_weather.py`
+- `src/data/fetch_mv_lines.py`
 - `src/data/fetch_pvgis.py`
 - `src/data/fetch_pse.py`
-- `src/data/fetch_tauron_grid_proxy.py`
+- `src/data/build_synthetic_mv_feeders.py`
 - `src/data/build_dataset.py`
 
 ### 2. Forecasting
@@ -67,15 +70,18 @@ Odpowiada za zamiane prognozy na wskaznik ryzyka.
 Proponowany wzor MVP:
 
 ```text
-risk_score = 100 * normalized_generation * oze_density_index * constraint_index * demand_modifier
+reverse_flow_kw = max(0, pv_generation_kw - local_demand_kw)
+overload_kw = max(0, reverse_flow_kw - synthetic_reverse_flow_limit_kw)
+risk_score = f(overload_kw, duration, confidence, oze_density_index)
 ```
 
 Gdzie:
 
-- `normalized_generation` - prognoza OZE przeskalowana do 0-1,
+- `pv_generation_kw` - symulowana produkcja OZE dla syntetycznego feedera SN,
+- `local_demand_kw` - syntetyczny/proxy popyt lokalny,
+- `synthetic_reverse_flow_limit_kw` - syntetyczny limit przeplywu zwrotnego dla feedera,
 - `oze_density_index` - lokalna gestosc OZE,
-- `constraint_index` - im wyzszy, tym mniejszy margines sieci,
-- `demand_modifier` - korekta na lokalny popyt.
+- `confidence` - jakosc wejsc: meteo, geometria, zalozenia PV i popytu.
 
 Proponowane pliki:
 
@@ -98,6 +104,7 @@ Endpointy:
 
 ```text
 GET /locations
+GET /mv-lines?branch_id=...
 GET /forecast?location_id=...
 GET /risk?timestamp=...
 GET /recommendations?location_id=...
@@ -135,6 +142,8 @@ GET /recommendations?location_id=...
 Najmniejszy sensowny wariant:
 
 - jeden plik `locations.csv` z 11 lokalizacjami oddzialow Tauron Dystrybucja,
+- jedna probka `mv_line_geometries.geojson` z publicznym/proxy przebiegiem linii SN,
+- jeden plik `synthetic_mv_feeders.csv` z parametrami demo,
 - jeden skrypt pobierajacy pogode,
 - jeden notebook trenujacy baseline,
 - jeden skrypt liczacy `risk_score`,

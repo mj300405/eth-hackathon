@@ -7,7 +7,7 @@ Roboczy projekt hackathonowy: predykcyjna mapa ryzyka lokalnych nadwyzek energii
 Publiczne dane pogodowe, dane o generacji OZE i publiczne informacje sieciowe daja wystarczajaca baze do zbudowania demonstratora, ktory:
 
 - prognozuje produkcje PV i wiatru dla wybranych lokalizacji,
-- wskazuje godziny wysokiego ryzyka lokalnej nadprodukcji w scenariuszu syntetycznym,
+- wskazuje godziny wysokiego ryzyka lokalnej nadprodukcji dla publicznych/proxy linii SN w scenariuszu syntetycznym,
 - laczy prognoze z publicznymi proxy ograniczen sieciowych,
 - pokazuje, jak model moglby zejsc do poziomu stacji SN/nN po podlaczeniu danych OSD.
 
@@ -46,7 +46,7 @@ Alternatywy:
 
 ## MVP w jednym zdaniu
 
-Dashboard mapowy, ktory na podstawie zaufanych danych pogodowych, prognozy generacji OZE i syntetycznych scenariuszy ograniczen pokazuje, gdzie i kiedy w kolejnym dniu moze pojawic sie wysokie ryzyko dla dalszej integracji prosumentow.
+Dashboard mapowy, ktory na podstawie zaufanych danych pogodowych, publicznych/proxy przebiegow linii SN, prognozy generacji OZE i syntetycznych scenariuszy ograniczen pokazuje, gdzie i kiedy w kolejnym dniu moze pojawic sie wysokie ryzyko dla dalszej integracji prosumentow.
 
 ## Co pokazujemy jury
 

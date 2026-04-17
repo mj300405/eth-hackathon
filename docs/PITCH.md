@@ -15,6 +15,7 @@ Projekt dotyczy dystrybucji energii, nie sprzedazy. Nie zakladamy wymiany danych
 Budujemy model, ktory laczy:
 
 - zaufane prognozy pogody z IMGW-PIB albo zatwierdzonego dostawcy,
+- publiczne przebiegi linii sredniego napiecia z BDOT10k/GUGiK albo OSM jako proxy geometrii,
 - historyczna generacje OZE,
 - publiczne dane o dostepnych mocach,
 - syntetyczne scenariusze ograniczen sieciowych,
@@ -27,10 +28,11 @@ Wynikiem jest mapa ryzyka dla kolejnych godzin i rekomendacje dzialan.
 W demo pokazujemy:
 
 1. Wybrane lokalizacje z obszaru Tauron.
-2. Prognoze produkcji PV/wiatr na jutro.
-3. Godziny najwiekszej generacji.
-4. Mape ryzyka dla syntetycznego scenariusza ograniczen.
-5. Rekomendacje: magazynowanie, przesuniecie zuzycia, inwestycja, monitoring.
+2. Publiczna/proxy geometrie linii SN w wybranym obszarze.
+3. Symulowana produkcje PV/wiatr na jutro dla syntetycznych feederow SN.
+4. Godziny najwiekszej generacji.
+5. Mape ryzyka dla syntetycznego scenariusza ograniczen.
+6. Rekomendacje: magazynowanie, przesuniecie zuzycia, inwestycja, monitoring.
 
 ## Dlaczego teraz
 
@@ -41,11 +43,14 @@ Rozwoj prosumeryzmu powoduje, ze siec dystrybucyjna musi byc zarzadzana bardziej
 Mozemy zbudowac wiarygodny demonstrator:
 
 - zaufane dane pogodowe,
+- publiczne/proxy przebiegi linii sredniego napiecia,
 - symulacje PV,
 - generacja OZE na poziomie systemu,
 - publiczne informacje o dostepnych mocach,
 - dane o rozwoju mikroinstalacji,
 - syntetyczne scenariusze ograniczen, jasno oznaczone jako demo.
+
+Nie uzywamy publicznej geometrii linii jako oficjalnej topologii Tauron Dystrybucja. W MVP przebieg linii daje realizm przestrzenny, a parametry pracy linii, obciazenia, generacja lokalna i przeciazenia sa symulowane.
 
 ## Dane pogodowe: MVP vs produkcja
 
@@ -60,7 +65,7 @@ Architektura pozostaje taka sama: zmienia sie adapter danych pogodowych, nie log
 Po formalnym dopuszczeniu danych OSD model moze dzialac na znacznie nizszym poziomie:
 
 - stacje SN/nN,
-- konkretne obwody,
+- konkretne linie, obwody i konfiguracje pracy,
 - lokalne profile zuzycia,
 - rzeczywiste pomiary napiec,
 - historia ograniczen i awarii.

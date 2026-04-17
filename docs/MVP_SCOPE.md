@@ -29,6 +29,7 @@ Projekt jest kierowany wylacznie do Tauron Dystrybucja jako OSD. Nie jest narzed
 - Prognoza produkcji PV dla wybranych lokalizacji.
 - Opcjonalnie prognoza produkcji wiatrowej.
 - Dane pogodowe z IMGW-PIB albo innego certyfikowanego/zatwierdzonego dostawcy.
+- Publiczne geometrie linii sredniego napiecia z BDOT10k/GUGiK albo OSM jako proxy przebiegu linii.
 - Dane historycznej generacji OZE jako punkt odniesienia.
 - Syntetyczne dane o przeciazeniach/ograniczeniach jako scenariusz demo.
 - Publiczne dane Taurona o mapach elastycznosci i dostepnych mocach jako kontekst, nie jako historia realnych przeciazen.
@@ -39,6 +40,7 @@ Projekt jest kierowany wylacznie do Tauron Dystrybucja jako OSD. Nie jest narzed
 
 - Sterowanie praca sieci.
 - Rzeczywiste przeliczanie rozpływow mocy.
+- Oficjalna topologia Tauron Dystrybucja.
 - Dokladna analiza transformatorow SN/nN.
 - Rzeczywiste dane o przeciazeniach, napieciach, awariach, rozpływach mocy i SCADA/AMI.
 - Dane klientow indywidualnych.
@@ -53,6 +55,7 @@ Projekt jest kierowany wylacznie do Tauron Dystrybucja jako OSD. Nie jest narzed
 Wejscie:
 
 - lokalizacja,
+- syntetyczny feeder SN oparty o publiczna geometrie linii,
 - prognoza pogody,
 - parametry instalacji PV/wiatr.
 
@@ -67,6 +70,7 @@ Wyjscie:
 Wejscie:
 
 - prognoza generacji,
+- publiczna/proxy geometria linii SN,
 - proxy lokalnej gestosci OZE,
 - syntetyczny scenariusz ograniczen/przeciazen,
 - proxy ograniczen przylaczeniowych,
@@ -83,6 +87,7 @@ Wyjscie:
 Widoki:
 
 - mapa obszarow,
+- mapa publicznych/proxy linii SN i syntetycznych feederow,
 - wykres godzinowy,
 - lista lokalizacji z najwyzszym ryzykiem,
 - panel "co zmienia formalnie dopuszczona integracja z danymi OSD".

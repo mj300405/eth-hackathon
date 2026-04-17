@@ -41,6 +41,7 @@ MVP ma odpowiedziec na pytanie:
 Minimalny zakres:
 
 - pobranie lub przygotowanie danych pogodowych dla wybranego obszaru,
+- pobranie publicznej/proxy geometrii linii sredniego napiecia,
 - oszacowanie produkcji PV i/lub wiatru na najblizsze 24-48 godzin,
 - przygotowanie syntetycznego scenariusza ograniczen/przeciazen,
 - zbudowanie prostego wskaznika ryzyka,
@@ -52,6 +53,7 @@ Minimalny zakres:
 ### Godziny 0-3: doprecyzowanie problemu
 
 - Wybrac obszar testowy, np. Slask / Malopolska / wybrane powiaty z obszaru Tauron.
+- Wybrac poziom demo: publiczne/proxy linie SN jako geometria, syntetyczne parametry pracy jako dane scenariuszowe.
 - Wybrac tryb MVP: PV-only albo PV + wiatr.
 - Ustalic, czy robimy dashboard mapowy, czy notebook z wizualizacja.
 - Zdefiniowac prosta metryke ryzyka.
@@ -61,6 +63,8 @@ Rezultat: zamkniety zakres, brak rozmywania projektu.
 ### Godziny 3-8: dane
 
 - Pobranie danych pogodowych z IMGW-PIB albo zatwierdzonego dostawcy: temperatura, zachmurzenie/promieniowanie, predkosc wiatru.
+- Pobranie publicznych/proxy przebiegow linii SN z BDOT10k/GUGiK albo OSM dla wybranego obszaru.
+- Zbudowanie syntetycznych feederow SN na tej geometrii.
 - Pobranie danych produkcji PV/wiatr lub przygotowanie syntetycznego targetu z PVGIS.
 - Przygotowanie syntetycznych danych o ograniczeniach/przeciazeniach dla scenariusza demo.
 - Zebranie publicznych informacji o mocach przylaczeniowych i planowanych przylaczeniach jako kontekstu.
@@ -79,24 +83,29 @@ Rezultat: prognoza produkcji na wykresie.
 
 ### Godziny 16-24: wskaznik ryzyka
 
-Przykladowy wzor:
+Przykladowy wzor dla syntetycznego feedera SN:
 
 ```text
-risk_score = forecast_generation_index * local_oze_density_index * connection_constraint_index - local_demand_proxy
+reverse_flow_kw = max(0, pv_generation_kw - local_demand_kw)
+overload_kw = max(0, reverse_flow_kw - synthetic_reverse_flow_limit_kw)
+risk_score = f(overload_kw, duration, oze_density_index, confidence)
 ```
 
 Gdzie:
 
-- `forecast_generation_index` - przewidywana produkcja OZE w danej godzinie,
+- `pv_generation_kw` - symulowana produkcja OZE w danej godzinie,
+- `local_demand_kw` - syntetyczny lub proxy popyt lokalny,
+- `synthetic_reverse_flow_limit_kw` - syntetyczny limit przeplywu zwrotnego dla feedera SN,
+- `overload_kw` - syntetyczne przekroczenie marginesu,
 - `local_oze_density_index` - przyblizona gestosc mikroinstalacji/OZE,
-- `connection_constraint_index` - syntetyczny/proxy indeks ograniczen na podstawie scenariusza demo i publicznego kontekstu,
-- `local_demand_proxy` - przyblizone zuzycie lub profil popytu.
+- `connection_constraint_index` - syntetyczny/proxy indeks ograniczen na podstawie scenariusza demo, geometrii SN i publicznego kontekstu,
+- `confidence` - jakosc wejsc i zalozen.
 
-Rezultat: ryzyko niskie/srednie/wysokie dla kazdej lokalizacji i godziny.
+Rezultat: ryzyko niskie/srednie/wysokie dla kazdego syntetycznego feedera SN i godziny.
 
 ### Godziny 24-34: dashboard
 
-- Mapa z punktami/obszarami.
+- Mapa z publiczna/proxy geometria linii SN i syntetycznymi feederami.
 - Timeline godzinowy.
 - Wykres prognozy PV/wiatr.
 - Panel rekomendacji.
@@ -165,6 +174,7 @@ Po utworzeniu repo:
 1. Wybrac finalny stack.
 2. Dodac skrypt `fetch_weather.py`.
 3. Dodac notebook `01_baseline_forecast.ipynb`.
-4. Dodac generator `synthetic_grid_constraints.csv`.
-5. Dodac prosty dashboard.
-6. Zbudowac pierwsza probke danych dla lokalizacji oddzialow Tauron Dystrybucja.
+4. Dodac pobieranie publicznych/proxy linii SN.
+5. Dodac generator `synthetic_mv_feeders.csv` i `synthetic_grid_constraints.csv`.
+6. Dodac prosty dashboard.
+7. Zbudowac pierwsza probke danych dla lokalizacji oddzialow Tauron Dystrybucja.

@@ -19,9 +19,11 @@ Ze wzgledu na unbundling projekt jest kierowany wylacznie do Tauron Dystrybucja 
 | Dataset | Status w repo | Docelowy plik | Zrodlo | Rola w MVP |
 |---|---|---|---|---|
 | `locations` | gotowy jako probka | `data/samples/locations.csv` | Tauron Dystrybucja - lista oddzialow | lista lokalizacji demo zgodna z obszarem Taurona |
+| `mv_line_geometries` | probka OSM dla Gliwic | `data/processed/mv_line_geometries.geojson` | BDOT10k/GUGiK albo OpenStreetMap | publiczny/proxy przebieg linii sredniego napiecia |
+| `synthetic_mv_feeders` | brak | `data/processed/synthetic_mv_feeders.csv` | dataset wyliczany z geometrii SN | syntetyczne obszary feederow SN do POC |
 | `pv_installation_assumptions` | gotowy jako probka | `data/samples/pv_installation_assumptions.csv` | zalozenia demo / PVGIS | parametry instalacji uzyte do symulacji PV |
 | `weather_hourly` | brak | `data/processed/weather_hourly.csv` | IMGW-PIB albo zatwierdzony dostawca meteo | zaufane wejscie do prognozy PV/wiatr |
-| `generation_forecast` | brak | `data/processed/generation_forecast.csv` | PVGIS albo model z meteo IMGW-PIB | godzinowa prognoza produkcji OZE |
+| `generation_forecast` | brak | `data/processed/generation_forecast.csv` | PVGIS albo model z meteo IMGW-PIB | symulowana godzinowa produkcja OZE dla POC |
 | `synthetic_grid_constraints` | brak | `data/processed/synthetic_grid_constraints.csv` | symulacja demo | syntetyczne scenariusze przeciazen/ograniczen |
 | `tauron_flexibility_context` | opcjonalny | `data/processed/tauron_flexibility_context.csv` | mapy elastycznosci Tauron Dystrybucja | publiczny kontekst, nie etykieta realnych przeciazen |
 | `tauron_connection_capacity` | brak | `data/processed/tauron_connection_capacity.csv` | dostepne moce przylaczeniowe Tauron Dystrybucja | proxy marginesu przylaczeniowego |
@@ -36,6 +38,8 @@ Ze wzgledu na unbundling projekt jest kierowany wylacznie do Tauron Dystrybucja 
 | Obszar | Zrodlo | Link | Uzycie w MVP |
 |---|---|---|---|
 | Obszar Taurona i oddzialy | Tauron Dystrybucja | https://www.tauron-dystrybucja.pl/kontakt/oddzialy | oficjalna lista lokalizacji startowych |
+| Przebieg linii SN | BDOT10k / GUGiK | https://www.gugik.gov.pl/projekty/gbdot/produkty | preferowane publiczne zrodlo geometrii linii elektroenergetycznych SN |
+| Przebieg linii SN fallback | OpenStreetMap / OpenInfrastructureMap | https://wiki.openstreetmap.org/wiki/Power_networks/Poland | alternatywne publiczne proxy linii 10-24 kV, gdy BDOT10k jest trudniejsze do pobrania |
 | Pogoda biezaca, historyczna i prognozy | IMGW-PIB | https://dane.imgw.pl | podstawowe zaufane zrodlo meteo dla MVP OSD |
 | Dane meteo developerskie | Open-Meteo | https://open-meteo.com | tylko fallback developerski, nie zrodlo decyzyjne dla OSD |
 | Promieniowanie i meteorologia developerska | NASA POWER | https://power.larc.nasa.gov | tylko fallback/analityka porownawcza |
@@ -69,6 +73,8 @@ W MVP nie probujemy ich pozyskac, odtwarzac ani zgadywac. Dane o przeciazeniach 
 ## Jak obejsc braki danych w MVP
 
 Zamiast udawac, ze mamy dane sieciowe, budujemy proxy i syntetyczne scenariusze.
+
+Najlepszy kompromis przestrzenny dla MVP to linia sredniego napiecia albo syntetyczny feeder SN. Geometrie linii mozemy wziac z publicznych danych BDOT10k albo OSM, ale nie traktujemy ich jako oficjalnej topologii Tauron Dystrybucja. Parametry pracy sieci, obciazenia, limity i historia przeciazen pozostaja syntetyczne.
 
 ### Proxy gestosci OZE
 
@@ -146,15 +152,53 @@ Mozliwe przyblizenia:
 | `assumption_type` | string | demo / pvgis / measured |
 | `notes` | string | opis zalozenia |
 
+### `mv_line_geometries`
+
+Format preferowany: GeoJSON.
+
+| Pole | Typ | Opis |
+|---|---|---|
+| `mv_line_id` | string | identyfikator linii/odcinka w naszym dataspecu |
+| `source_feature_id` | string | identyfikator obiektu z BDOT10k/OSM jesli dostepny |
+| `source` | string | bdot10k/osm/manual |
+| `source_url` | string | link do zrodla |
+| `voltage_v` | int | napiecie, np. 15000 albo 20000 jesli znane |
+| `geometry` | linestring | geometria przebiegu linii |
+| `length_km` | float | dlugosc odcinka |
+| `operator_tag` | string | tag operatora jesli publicznie dostepny, bez zgadywania |
+| `quality_flag` | string | high/medium/low zalezne od zrodla i kompletności |
+| `is_official_tauron_topology` | bool | zawsze false w MVP |
+
+### `synthetic_mv_feeders`
+
+| Pole | Typ | Opis |
+|---|---|---|
+| `feeder_id` | string | syntetyczny identyfikator feedera SN |
+| `branch_location_id` | string | oddzial/lokalizacja Tauron z `locations` |
+| `mv_line_id` | string | publiczna geometria linii uzyta jako proxy |
+| `feeder_name` | string | nazwa demo, bez uzycia nazw operacyjnych Taurona |
+| `centroid_lat` | float | centroid obszaru feedera |
+| `centroid_lon` | float | centroid obszaru feedera |
+| `length_km` | float | dlugosc publicznej/proxy geometrii |
+| `synthetic_capacity_kw` | float | syntetyczna przepustowosc do scenariusza |
+| `synthetic_reverse_flow_limit_kw` | float | syntetyczny limit przeplywu zwrotnego |
+| `synthetic_base_demand_kw` | float | syntetyczny bazowy popyt |
+| `synthetic_pv_capacity_kwp` | float | syntetyczna moc PV przypisana do feedera |
+| `area_type` | string | residential/industrial/mixed/rural |
+| `is_synthetic` | bool | true |
+| `source_note` | string | informacja, ze geometria jest publicznym proxy, a parametry sa syntetyczne |
+
 ### `generation_forecast`
 
 | Pole | Typ | Opis |
 |---|---|---|
 | `timestamp` | datetime | godzina prognozy |
-| `location_id` | string | lokalizacja |
+| `location_id` | string | lokalizacja albo oddzial nadrzedny |
+| `feeder_id` | string | syntetyczny feeder SN, jesli prognoza jest na poziomie linii |
 | `pv_kw` | float | prognoza PV |
 | `wind_kw` | float | prognoza wiatru |
 | `confidence` | float | pewnosc prognozy |
+| `generation_basis` | string | pvgis/model/synthetic |
 
 ### `demand_proxy`
 
@@ -162,7 +206,9 @@ Mozliwe przyblizenia:
 |---|---|---|
 | `timestamp` | datetime | godzina albo reprezentatywna godzina profilu |
 | `location_id` | string | lokalizacja |
+| `feeder_id` | string | syntetyczny feeder SN, jesli profil jest na poziomie linii |
 | `demand_index` | float | popyt znormalizowany do 0-1 albo skali demo |
+| `demand_kw` | float | syntetyczny/proxy popyt lokalny |
 | `profile_type` | string | weekday/weekend/seasonal/demo |
 | `source_url` | string | zrodlo danych lub opis zalozenia |
 
@@ -171,6 +217,7 @@ Mozliwe przyblizenia:
 | Pole | Typ | Opis |
 |---|---|---|
 | `location_id` | string | lokalizacja |
+| `feeder_id` | string | syntetyczny feeder SN |
 | `nearest_network_node` | string | najblizszy GPZ/RS/grupa wezlow jesli znana |
 | `constraint_index` | float | proxy ograniczen sieciowych 0-1 |
 | `connection_capacity_index` | float | proxy dostepnej mocy |
@@ -187,6 +234,7 @@ Mozliwe przyblizenia:
 | `scenario_id` | string | identyfikator scenariusza |
 | `timestamp` | datetime | godzina scenariusza |
 | `location_id` | string | lokalizacja |
+| `feeder_id` | string | syntetyczny feeder SN |
 | `synthetic_constraint_index` | float | symulowany poziom ograniczenia 0-1 |
 | `synthetic_overload_flag` | bool | symulowana flaga przeciazenia |
 | `synthetic_overload_mw` | float | symulowana wartosc przekroczenia/marginesu |
@@ -228,8 +276,11 @@ Mozliwe przyblizenia:
 |---|---|---|
 | `timestamp` | datetime | godzina |
 | `location_id` | string | lokalizacja |
+| `feeder_id` | string | syntetyczny feeder SN |
 | `risk_score` | int | 0-100 |
 | `risk_level` | string | low/medium/high |
+| `reverse_flow_kw` | float | syntetyczny przeplyw zwrotny |
+| `overload_kw` | float | syntetyczne przekroczenie limitu |
 | `recommendation` | string | rekomendacja |
 
 ## Plan pobierania danych
@@ -237,15 +288,17 @@ Mozliwe przyblizenia:
 Na start:
 
 1. Uzyj `data/samples/locations.csv` jako listy 11 oddzialow Tauron Dystrybucja.
-2. Ustaw jawne zalozenia PV w `pv_installation_assumptions.csv`.
-3. Pobierz pogode dla tych lokalizacji z IMGW-PIB albo zatwierdzonego dostawcy meteo.
-4. Uzyj PVGIS albo prostego modelu PV z promieniowania do wyznaczenia profilu PV.
-5. Wygeneruj `synthetic_grid_constraints.csv` jako jawny scenariusz przeciazen demo.
-6. Opcjonalnie wprowadz publiczny kontekst Taurona o zapotrzebowaniu na uslugi elastycznosci.
-7. Wprowadz recznie lub zeskrob dostepne moce przylaczeniowe Taurona.
-8. Dodaj proxy gestosci OZE z URE/GUS albo ustaw wersje demonstracyjna.
-9. Dodaj `demand_proxy.csv` jako prosty profil popytu.
-10. Zapisz wszystko do `data/processed/`.
+2. Pobierz publiczne geometrie linii SN z BDOT10k/GUGiK albo OSM i zapisz jako `mv_line_geometries.geojson`.
+3. Z geometrii linii utworz `synthetic_mv_feeders.csv`: publiczny przebieg + syntetyczne parametry pracy.
+4. Ustaw jawne zalozenia PV w `pv_installation_assumptions.csv`.
+5. Pobierz pogode dla tych lokalizacji z IMGW-PIB albo zatwierdzonego dostawcy meteo.
+6. Uzyj PVGIS albo prostego modelu PV z promieniowania do wyznaczenia symulowanej produkcji PV dla feederow SN.
+7. Wygeneruj `synthetic_grid_constraints.csv` jako jawny scenariusz przeciazen demo.
+8. Opcjonalnie wprowadz publiczny kontekst Taurona o zapotrzebowaniu na uslugi elastycznosci.
+9. Wprowadz recznie lub zeskrob dostepne moce przylaczeniowe Taurona.
+10. Dodaj proxy gestosci OZE z URE/GUS albo ustaw wersje demonstracyjna.
+11. Dodaj `demand_proxy.csv` jako prosty profil popytu.
+12. Zapisz wszystko do `data/processed/`.
 
 ## Uwagi prawne i licencyjne
 
@@ -255,3 +308,4 @@ Na start:
 - Nie sugerowac, ze wyniki sa oficjalnymi danymi Taurona.
 - Nie uzywac danych sprzedazowych ani nie projektowac wymiany informacji ze spolkami sprzedazy energii.
 - Oznaczac wszystkie dane o przeciazeniach jako syntetyczne, jesli nie pochodza z formalnie przekazanego i dopuszczonego zbioru OSD.
+- Oznaczac publiczne przebiegi linii SN jako proxy geometrii, nie oficjalna topologie Tauron Dystrybucja.
