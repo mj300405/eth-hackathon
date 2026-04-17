@@ -1,0 +1,6 @@
+feeder_id,branch_location_id,mv_line_id,feeder_name,centroid_lat,centroid_lon,length_km,synthetic_capacity_kw,synthetic_reverse_flow_limit_kw,synthetic_base_demand_kw,synthetic_pv_capacity_kwp,area_type,oze_density_index,is_synthetic,source_note
+gliwice_f01,gliwice,osm_way_100207009,GLW-DEMO-F01,50.435867,18.686646,18.577,2200,330,520,980,residential,0.72,true,OSM geometry proxy; electrical parameters synthetic for POC
+gliwice_f02,gliwice,osm_way_103697282,GLW-DEMO-F02,50.232542,18.645709,0.067,2600,260,710,1120,mixed,0.68,true,OSM geometry proxy; electrical parameters synthetic for POC
+gliwice_f03,gliwice,osm_way_103697295,GLW-DEMO-F03,50.232562,18.645740,0.067,3100,920,1180,1320,industrial,0.54,true,OSM geometry proxy; electrical parameters synthetic for POC
+gliwice_f04,gliwice,osm_way_103697306,GLW-DEMO-F04,50.235209,18.633880,0.283,1800,260,390,820,residential,0.81,true,OSM geometry proxy; electrical parameters synthetic for POC
+gliwice_f05,gliwice,osm_way_157302285,GLW-DEMO-F05,50.299235,18.614511,2.155,1600,250,310,760,rural,0.77,true,OSM geometry proxy; electrical parameters synthetic for POC
