@@ -54,11 +54,22 @@ Nie uzywamy publicznej geometrii linii jako oficjalnej topologii Tauron Dystrybu
 
 ## Dane pogodowe: MVP vs produkcja
 
-W MVP korzystamy z publicznych danych IMGW-PIB jako oficjalnego i zaufanego zrodla meteorologicznego. To wystarcza, zeby pokazac metode, pipeline danych i zaleznosc produkcji PV/wiatr od pogody.
+W MVP korzystamy z publicznych danych IMGW-PIB jako oficjalnego i zaufanego zrodla meteorologicznego. Nie nazywamy ich automatycznie produkcyjnie certyfikowanymi ani objetych SLA, ale sa wystarczajace, zeby pokazac metode, pipeline danych i zaleznosc produkcji PV/wiatr od pogody.
 
 W wersji produkcyjnej dla OSD zakladamy formalny dostep do lepszego zrodla meteo: profesjonalnego API, Banku Danych IMGW-PIB, umowy z IMGW-PIB albo rownowaznego certyfikowanego dostawcy. Taki dostep powinien dawac mocniejsza audytowalnosc, komplet zmiennych potrzebnych do energetyki, stabilniejsze SLA i jasna odpowiedzialnosc za zrodlo danych.
 
 Architektura pozostaje taka sama: zmienia sie adapter danych pogodowych, nie logika risk score.
+
+## Klasyfikacja danych: MVP vs produkcja
+
+| Obszar danych | MVP | Produkcja |
+|---|---|---|
+| Pogoda | publiczne IMGW-PIB jako oficjalne zaufane zrodlo | formalny produkt IMGW-PIB, Bank Danych, profesjonalne API albo certyfikowany dostawca z SLA |
+| Geometria linii SN | BDOT10k/GUGiK albo OSM jako publiczne proxy przebiegu | oficjalna topologia OSD po formalnym dopuszczeniu |
+| Generacja PV | symulacja PVGIS/model PV na danych pogodowych | pomiary/estymacje OSD, dane prosumenckie i model kalibrowany operacyjnie |
+| Popyt lokalny | syntetyczny profil popytu | rzeczywiste profile zuzycia, agregaty AMI/SCADA zgodne z zasadami dostepu |
+| Przeciazenia i limity | jawnie syntetyczne scenariusze demo | rzeczywiste limity, pomiary napiec, obciazenia i historia ograniczen z OSD |
+| Dane sprzedazowe | nie uzywamy | nie uzywamy; projekt pozostaje po stronie dystrybucji |
 
 ## Co daje formalna integracja z OSD
 

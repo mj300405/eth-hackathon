@@ -14,6 +14,19 @@ Ze wzgledu na infrastrukture krytyczna dane pogodowe dla wersji prezentowanej OS
 
 Ze wzgledu na unbundling projekt jest kierowany wylacznie do Tauron Dystrybucja jako OSD. Nie uzywamy danych sprzedazowych i nie projektujemy wymiany informacji ze spolkami sprzedazy energii.
 
+## Klasyfikacja zaufania danych
+
+| Obszar danych | MVP | Status zaufania w MVP | Produkcja | Jak komunikowac |
+|---|---|---|---|---|
+| Pogoda | publiczne dane IMGW-PIB z `dane.imgw.pl` | oficjalne i zaufane zrodlo publiczne, ale bez obiecywania SLA/certyfikacji produkcyjnej | formalny produkt IMGW-PIB, Bank Danych, profesjonalne API, umowa albo rownowazny certyfikowany dostawca | "oficjalne zrodlo IMGW-PIB w MVP; produkcyjnie formalny dostep/SLA" |
+| Geometria linii SN | BDOT10k/GUGiK lub OSM/Overpass | publiczne proxy przestrzenne, nie oficjalna topologia Tauron Dystrybucja | oficjalna topologia OSD po formalnym dopuszczeniu | "publiczne/proxy przebiegi linii SN" |
+| Oddzialy Tauron | strona Tauron Dystrybucja | oficjalne publiczne zrodlo organizacyjne | bez zmian albo dane referencyjne OSD | "oficjalna lista oddzialow Tauron Dystrybucja" |
+| Generacja PV | PVGIS albo model PV na pogodzie | symulacja/estymacja do POC, nie pomiary prosumentow | dane pomiarowe/agregaty OSD i model kalibrowany operacyjnie | "symulowana generacja PV" |
+| Orientacja PV | syntetyczny miks dachow/orientacji | zalozenie demo | dane z paszportyzacji instalacji, ankiet, teledetekcji albo agregatow OSD | "syntetyczne zalozenia orientacji" |
+| Popyt lokalny | syntetyczny profil popytu | zalozenie demo | rzeczywiste profile zuzycia/agregaty AMI/SCADA zgodne z regulacjami | "syntetyczny/proxy profil popytu" |
+| Limity linii i przeciazenia | syntetyczne scenariusze | jawnie symulowane, nie dane Taurona | rzeczywiste limity, pomiary i historia ograniczen OSD | "jawnie syntetyczne scenariusze ograniczen" |
+| Dane sprzedazowe | brak | nie uzywamy | brak | "poza zakresem ze wzgledu na unbundling" |
+
 ## Stan datasetow MVP
 
 | Dataset | Status w repo | Docelowy plik | Zrodlo | Rola w MVP |

@@ -40,3 +40,22 @@ Open-Meteo, NASA POWER i podobne serwisy moga byc uzyte do szybkiego development
 Geometrie linii SN z BDOT10k/OSM traktujemy jako publiczny proxy przebiegu linii, a nie oficjalna topologie Tauron Dystrybucja. Limity, obciazenia, generacja lokalna i przeciazenia pozostaja syntetyczne w MVP.
 
 W `data/samples/mv_line_geometries_gliwice_sample.geojson` jest mala probka publicznych linii SN pobrana z OSM/Overpass dla obszaru Gliwic. Pelny lokalny wynik testu moze lezec w `data/processed/`, ale nie powinien byc commitowany jako duzy plik.
+
+## Aktualna probka POC: Gliwice
+
+Pierwszy kompletny, maly dataset demonstracyjny jest oparty o Gliwice:
+
+- `mv_line_geometries_gliwice_sample.geojson` - 5 publicznych/proxy odcinkow linii SN z OSM.
+- `synthetic_mv_feeders_gliwice.csv` - 5 syntetycznych feederow SN z limitami i mocami demo.
+- `pv_orientation_mix_gliwice.csv` - syntetyczny miks orientacji PV per feeder.
+- `weather_hourly_gliwice_demo.csv` - 24 godziny pogody demo, do podmiany na IMGW-PIB.
+- `generation_forecast_gliwice_demo.csv` - 24h symulowanej generacji PV per feeder.
+- `demand_proxy_gliwice_demo.csv` - 24h syntetycznego popytu per feeder.
+- `synthetic_grid_constraints_gliwice_demo.csv` - 24h syntetycznych ograniczen/przeciazen.
+- `risk_hourly_gliwice_demo.csv` - wynikowy risk score per feeder i godzina.
+
+Pliki mozna odtworzyc komenda:
+
+```bash
+python3 src/data/build_sample_datasets.py
+```
