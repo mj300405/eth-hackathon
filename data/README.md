@@ -57,5 +57,5 @@ Pierwszy kompletny, maly dataset demonstracyjny jest oparty o Gliwice:
 Pliki mozna odtworzyc komenda:
 
 ```bash
-python3 src/data/build_sample_datasets.py
+python3 data/build_sample_datasets.py
 ```

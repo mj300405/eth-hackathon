@@ -42,10 +42,10 @@ Odpowiada za:
 Proponowane pliki:
 
 - `src/data/fetch_weather.py`
-- `src/data/fetch_mv_lines.py`
+- `data/fetch_mv_lines.py`
 - `src/data/fetch_pvgis.py`
 - `src/data/fetch_pse.py`
-- `src/data/build_synthetic_mv_feeders.py`
+- `data/build_sample_datasets.py`
 - `src/data/build_dataset.py`
 
 ### 2. Forecasting
