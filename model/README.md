@@ -109,6 +109,29 @@ top_feeder_id
 For API/dashboard use, `latest_location_predictions.json` is the cleanest shape:
 one list of prediction records per location and timestamp.
 
+## Model service
+
+Run the model as a local HTTP service:
+
+```bash
+uvicorn model.serve_model:app --host 127.0.0.1 --port 8001
+```
+
+Endpoints:
+
+```text
+GET /health
+GET /predictions/location
+GET /predictions/feeder
+GET /metrics
+POST /reload
+```
+
+The service uses `MODEL_DEFAULT_INPUT` as the default feature table and
+`MODEL_ARTIFACT_PATH` as the model artifact path. If `MODEL_TRAIN_ON_STARTUP` is
+`true`, the service trains the model at startup only when the artifact is
+missing.
+
 ## Near real-time shape
 
 In production or a stronger demo, run the following cycle every 15-60 minutes:

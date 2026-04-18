@@ -68,6 +68,8 @@ Aktualne pliki:
 
 - `model/train_overload_model.py`
 - `model/predict_overload.py`
+- `model/serve_model.py`
+- `model/Dockerfile`
 - `model/requirements.txt`
 - `model/README.md`
 
@@ -98,25 +100,38 @@ Aktualny baseline:
 - artefakty lokalne w `model/artifacts/`, ignorowane przez Git,
 - predykcje per feeder i agregacja per lokalizacja w `latest_location_predictions.json`.
 
-### 4. API albo dashboard
+### 4. Runtime API i dashboard
 
-Wariant szybki:
+Aktualny runtime kontenerowy:
 
-- Streamlit czyta pliki CSV/Parquet i pokazuje mape.
+- `model` - FastAPI service na porcie `8001`, laduje albo trenuje artefakt ML,
+- `api` - FastAPI backend na porcie `8000`, wystawia dashboard-friendly endpointy,
+- `frontend` - Next.js z katalogu `app/` na porcie `3000`.
 
-Wariant bardziej produktowy:
+Uruchomienie:
 
-- FastAPI udostepnia endpointy,
-- frontend React/Next.js pokazuje mape i wykresy.
+```bash
+docker compose up --build
+```
 
-Endpointy:
+Aktualne endpointy API:
 
 ```text
 GET /locations
-GET /mv-lines?branch_id=...
-GET /forecast?location_id=...
-GET /risk?timestamp=...
-GET /recommendations?location_id=...
+GET /predictions/locations
+GET /predictions/feeders
+GET /metrics
+GET /health
+```
+
+Aktualne endpointy model service:
+
+```text
+GET /predictions/location
+GET /predictions/feeder
+GET /metrics
+GET /health
+POST /reload
 ```
 
 ## Struktura przyszlego repo
@@ -141,12 +156,19 @@ GET /recommendations?location_id=...
 │   └── README.md
 ├── model/
 │   ├── README.md
+│   ├── Dockerfile
 │   ├── requirements.txt
+│   ├── serve_model.py
+│   ├── predict_overload.py
 │   └── train_overload_model.py
 ├── api/
-│   └── FastAPI backend
+│   ├── Dockerfile
+│   ├── README.md
+│   ├── requirements.txt
+│   └── main.py
 ├── app/
-│   └── dashboard or frontend
+│   ├── Dockerfile
+│   └── Next.js dashboard
 ├── notebooks/
 │   ├── 01_baseline_forecast.ipynb
 │   └── README.md

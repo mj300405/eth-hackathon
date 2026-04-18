@@ -295,6 +295,40 @@ python model/train_overload_model.py
 python model/predict_overload.py
 ```
 
+### 11. Docker Compose: model + API + frontend
+
+Pelny lokalny runtime jest podzielony na trzy kontenery:
+
+- `model` - FastAPI service z modelem predykcji, port `8001`.
+- `api` - publiczny backend dla dashboardu, port `8000`.
+- `frontend` - Next.js z katalogu `app/`, port `3000`.
+
+Uruchomienie:
+
+```bash
+docker compose up --build
+```
+
+Adresy:
+
+```text
+Frontend:      http://localhost:3000
+API docs:      http://localhost:8000/docs
+Model docs:    http://localhost:8001/docs
+API health:    http://localhost:8000/health
+Predykcje:     http://localhost:8000/predictions/locations
+Metryki:       http://localhost:8000/metrics
+```
+
+Kontener `model` trenuje artefakt przy starcie, jesli nie ma jeszcze pliku
+`model/artifacts/overload_probability_model.pkl` w wolumenie. Dane z katalogu
+`data/` sa montowane do kontenera, a artefakty modelu trafiaja do wolumenu
+`model-artifacts`.
+
+Na teraz frontend jest uruchamiany jako osobny kontener aplikacyjny. Przepiecie
+komponentow dashboardu z danych statycznych na endpointy `api` to kolejny krok
+po ustabilizowaniu kontraktu odpowiedzi.
+
 ## Co pokazujemy jury
 
 1. Wybor obszaru: wojewodztwo, powiat, gmina albo punkt/stacja.

@@ -1,0 +1,67 @@
+services:
+  model:
+    build:
+      context: .
+      dockerfile: model/Dockerfile
+    environment:
+      MODEL_ARTIFACT_PATH: model/artifacts/overload_probability_model.pkl
+      MODEL_DEFAULT_INPUT: data/samples/model_training_gliwice_demo_test.csv
+      MODEL_TRAIN_ON_STARTUP: "true"
+      LOKY_MAX_CPU_COUNT: "2"
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./data:/workspace/data
+      - model-artifacts:/workspace/model/artifacts
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8001/health', timeout=5)",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    environment:
+      MODEL_SERVICE_URL: http://model:8001
+      REQUEST_TIMEOUT_SECONDS: "30"
+      CORS_ALLOW_ORIGINS: http://localhost:3000,http://127.0.0.1:3000
+    ports:
+      - "8000:8000"
+    depends_on:
+      model:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=5)",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  frontend:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8000
+      NEXT_TELEMETRY_DISABLED: "1"
+    ports:
+      - "3000:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  model-artifacts:
