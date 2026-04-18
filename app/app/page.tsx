@@ -7,7 +7,7 @@ import Link from "next/link"
 
 export default function LandingPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-pink-50 via-white to-gray-50">
       {/* Header */}
       <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4">
@@ -82,10 +82,10 @@ export default function LandingPage() {
             </Card>
 
             {/* CLIENT Card */}
-            <Card className="group hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border-2 hover:border-[#e2007a]">
+            <Card className="group hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border-2 hover:border-gray-700">
               <CardHeader className="text-center pb-4">
-                <div className="mx-auto mb-4 h-20 w-20 rounded-full bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Users className="h-10 w-10 text-[#e2007a]" />
+                <div className="mx-auto mb-4 h-20 w-20 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Users className="h-10 w-10 text-gray-700" />
                 </div>
                 <CardTitle className="text-2xl">Klient</CardTitle>
                 <CardDescription className="text-base">
@@ -95,24 +95,24 @@ export default function LandingPage() {
               <CardContent className="space-y-4">
                 <ul className="space-y-2 text-sm text-muted-foreground mb-6">
                   <li className="flex items-center gap-2">
-                    <div className="h-1.5 w-1.5 rounded-full bg-[#e2007a]" />
+                    <div className="h-1.5 w-1.5 rounded-full bg-gray-700" />
                     Chatbot po śląsku do obsługi zapytań
                   </li>
                   <li className="flex items-center gap-2">
-                    <div className="h-1.5 w-1.5 rounded-full bg-[#e2007a]" />
+                    <div className="h-1.5 w-1.5 rounded-full bg-gray-700" />
                     Informacje o taryfach energetycznych
                   </li>
                   <li className="flex items-center gap-2">
-                    <div className="h-1.5 w-1.5 rounded-full bg-[#e2007a]" />
+                    <div className="h-1.5 w-1.5 rounded-full bg-gray-700" />
                     Predykcja okresów darmowej energii
                   </li>
                   <li className="flex items-center gap-2">
-                    <div className="h-1.5 w-1.5 rounded-full bg-[#e2007a]" />
+                    <div className="h-1.5 w-1.5 rounded-full bg-gray-700" />
                     Porady dotyczące oszczędzania energii
                   </li>
                 </ul>
                 <Link href="/client" className="block">
-                  <Button className="w-full bg-[#e2007a] hover:bg-[#c00066] group">
+                  <Button className="w-full bg-gray-700 hover:bg-gray-800 group">
                     Przejdź do portalu
                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
