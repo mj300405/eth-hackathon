@@ -28,6 +28,25 @@ Aktualna probka POC korzysta z trzech publicznych zrodel/API:
 
 Tauron dostepne moce, Tauron uslugi elastycznosci, PSE, URE i GUS/TERYT sa opisane jako kolejne zrodla kontekstowe, ale nie sa jeszcze uzyte w aktualnej probce POC.
 
+## Skrypty generowania danych
+
+| Skrypt | Co robi | Typ danych |
+|---|---|---|
+| `data/fetch_imgw_weather.py` | pobiera obserwacje meteo IMGW-PIB dla stacji Katowice jako najblizszy publiczny synop dla POC Gliwice | realne publiczne API |
+| `data/fetch_pvgis.py` | pobiera godzinowy profil PVGIS/JRC dla Gliwic i zapisuje produkcje w `pv_kw_per_kwp` | realne publiczne API |
+| `data/fetch_mv_lines.py` | pobiera publiczne/proxy przebiegi linii SN z OSM/Overpass dla podanego bbox | realne publiczne API/proxy |
+| `data/build_sample_datasets.py` | buduje kompletna probke POC: feedery, projekcje meteo, generacje PV, popyt, limity, przeciazenia i risk score | API-first + minimalna syntetyka OSD |
+
+`build_sample_datasets.py` nie wymysla recznie etykiet ryzyka. Liczy je deterministycznie z danych wejsciowych:
+
+```text
+pv_generation_kw = pvgis_kw_per_kwp * synthetic_pv_capacity_kwp
+reverse_flow_kw = max(0, pv_generation_kw - synthetic_local_demand_kw)
+overload_kw = max(0, reverse_flow_kw - synthetic_reverse_flow_limit_kw)
+```
+
+Syntetyczne sa tylko brakujace dane OSD: moc PV przypisana do feedera, lokalny popyt i limit przeplywu zwrotnego. Geometria feedera pochodzi z publicznego/proxy OSM, ksztalt generacji z PVGIS, a seed meteo z IMGW-PIB.
+
 ## Minimalne pliki demo
 
 Na start warto dodac:
@@ -73,3 +92,15 @@ python3 data/fetch_imgw_weather.py
 python3 data/fetch_pvgis.py
 python3 data/build_sample_datasets.py
 ```
+
+Pelne odswiezenie publicznych/proxy linii SN z Overpass dla okolic Gliwic mozna uruchomic lokalnie tak:
+
+```bash
+python3 data/fetch_mv_lines.py \
+  --bbox 50.22,18.55,50.38,18.82 \
+  --output data/processed/mv_line_geometries_gliwice.geojson \
+  --raw-output data/raw/osm_mv_lines_gliwice.overpass.json \
+  --source-label osm_mv_lines_gliwice
+```
+
+Do commitowanych probek uzywamy malego pliku `data/samples/mv_line_geometries_gliwice_sample.geojson`, zeby repo pozostalo lekkie.

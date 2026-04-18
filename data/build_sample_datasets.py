@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Build a small complete POC dataset for one Tauron branch area.
+"""Build a small API-first POC dataset for one Tauron branch area.
 
 The dataset is intentionally small and demonstrational:
-- MV line geometry is a public/proxy OSM sample.
-- Feeder capacities, demand, PV capacity and overloads are synthetic.
-- Weather is a deterministic demo forecast pending IMGW integration.
+- MV line geometry comes from a public/proxy OSM/Overpass sample.
+- Weather projection is seeded by an official public IMGW observation when available.
+- PV generation shape comes from a public PVGIS/JRC reference profile when available.
+- Only the missing OSD context is synthetic: feeder PV capacity, local demand,
+  reverse-flow limits and the resulting overload/risk scenario.
 """
 
 from __future__ import annotations
