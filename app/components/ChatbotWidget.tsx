@@ -50,16 +50,16 @@ export default function ChatbotWidget() {
       {/* Floating Button with karbusek.svg */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-2 -right-[150px] z-50 transition-all duration-300 group"
+        className="fixed bottom-0 right-0 z-50 transition-all duration-300 group"
         aria-label="Otwórz chatbota"
       >
-        <div className="relative w-[380px] h-[55vh] overflow-visible">
+        <div className="relative w-[200px] aspect-[450/810] overflow-visible">
           <Image
             src="/karbusek.svg"
             alt="Chatbot"
             width={1200}
             height={2400}
-            className="drop-shadow-lg group-hover:scale-105 transition-transform object-cover object-right h-full"
+            className="drop-shadow-lg group-hover:scale-105 transition-transform object-contain object-bottom w-full h-full"
             priority
           />
         </div>
