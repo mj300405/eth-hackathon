@@ -36,6 +36,7 @@ Tauron dostepne moce, Tauron uslugi elastycznosci, PSE, URE i GUS/TERYT sa opisa
 | `data/fetch_pvgis.py` | pobiera godzinowy profil PVGIS/JRC dla Gliwic i zapisuje produkcje w `pv_kw_per_kwp` | realne publiczne API |
 | `data/fetch_mv_lines.py` | pobiera publiczne/proxy przebiegi linii SN z OSM/Overpass dla podanego bbox | realne publiczne API/proxy |
 | `data/build_sample_datasets.py` | buduje kompletna probke POC: feedery, projekcje meteo, generacje PV, popyt, limity, przeciazenia i risk score | API-first + minimalna syntetyka OSD |
+| `data/generate_training_dataset.py` | buduje plaski dataset ML z cechami, `target_overload_probability` i `target_overload_event` | API-first + syntetyczny target OSD |
 
 `build_sample_datasets.py` nie wymysla recznie etykiet ryzyka. Liczy je deterministycznie z danych wejsciowych:
 
@@ -46,6 +47,20 @@ overload_kw = max(0, reverse_flow_kw - synthetic_reverse_flow_limit_kw)
 ```
 
 Syntetyczne sa tylko brakujace dane OSD: moc PV przypisana do feedera, lokalny popyt i limit przeplywu zwrotnego. Geometria feedera pochodzi z publicznego/proxy OSM, ksztalt generacji z PVGIS, a seed meteo z IMGW-PIB.
+
+Do trenowania modelu prawdopodobienstwa przeciazenia uzywamy:
+
+```bash
+python3 data/generate_training_dataset.py
+```
+
+Domyslnie powstaje `data/samples/model_training_gliwice_demo.csv` z 30 dniami danych godzinowych dla 5 feederow. Target `target_overload_probability` jest syntetyczny, ale liczony z fizycznie zrozumialych zmiennych: generacji PV, lokalnego popytu i limitu przeplywu zwrotnego. Jesli lokalnie jest pelny surowy plik PVGIS, mozna wygenerowac dataset z rocznego profilu:
+
+```bash
+python3 data/generate_training_dataset.py \
+  --pvgis-raw data/raw/pvgis_gliwice_2020.json \
+  --days 90
+```
 
 ## Minimalne pliki demo
 

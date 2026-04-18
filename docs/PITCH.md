@@ -19,9 +19,9 @@ Budujemy model, ktory laczy:
 - publiczny profil PV z PVGIS/JRC jako ksztalt symulowanej generacji,
 - opcjonalnie publiczne dane o dostepnych mocach jako pozniejszy kontekst sieciowy,
 - minimalny syntetyczny popyt lokalny i limit feedera SN tam, gdzie nie ma dostepu do danych OSD,
-- risk score wyliczony z generacji, popytu i limitu, a nie recznie wymyslone etykiety.
+- prawdopodobienstwo przeciazenia wyliczone z generacji, popytu i limitu, a nie recznie wymyslone etykiety.
 
-Wynikiem jest mapa ryzyka dla kolejnych godzin i rekomendacje dzialan.
+Wynikiem jest mapa prawdopodobienstwa przeciazenia dla kolejnych godzin i rekomendacje dzialan.
 
 ## Demo
 
@@ -52,7 +52,7 @@ Na tej podstawie mamy wiarygodny demonstrator API-first:
 - publiczne/proxy przebiegi linii sredniego napiecia dla Gliwic,
 - profil PVGIS skalowany do feederow SN opartych o publiczna geometrie,
 - minimalny syntetyczny popyt lokalny i limit przeplywu zwrotnego,
-- risk score wyliczony jako wynik modelu, jasno oznaczony jako demo.
+- `target_overload_probability` jako wynik modelu/scenariusza, jasno oznaczony jako demo.
 
 Publiczne dane Taurona o dostepnych mocach i uslugach elastycznosci oraz dane PSE/URE/GUS traktujemy jako kolejny krok integracji, nie jako element juz uzyty w pierwszej probce POC.
 
@@ -67,7 +67,7 @@ Minimalny syntetyczny zakres dla prezentacji to:
 - przydzial mocy PV do publicznych/proxy feederow SN, jesli nie mamy lokalnego rozkladu instalacji,
 - prosty lokalny profil popytu per feeder,
 - syntetyczny limit przeplywu zwrotnego per feeder,
-- wynikowe przeciazenie i risk score liczone ze wzoru, nie wpisywane recznie.
+- wynikowe przeciazenie i prawdopodobienstwo przeciazenia liczone ze wzoru, nie wpisywane recznie.
 
 Sposob generowania syntetyki powinien byc deterministyczny i powiazany z danymi z API:
 
@@ -75,7 +75,7 @@ Sposob generowania syntetyki powinien byc deterministyczny i powiazany z danymi 
 pv_generation_kw = pvgis_kw_per_kwp * synthetic_pv_capacity_kwp
 reverse_flow_kw = max(0, pv_generation_kw - synthetic_local_demand_kw)
 overload_kw = max(0, reverse_flow_kw - synthetic_reverse_flow_limit_kw)
-risk_score = f(overload_kw, czas_trwania, confidence)
+target_overload_probability = f(overload_kw, czas_trwania, confidence)
 ```
 
 Czyli generacja ma ksztalt z PVGIS, miejsce pochodzi z geometrii linii SN, a pogoda pochodzi z IMGW-PIB. Syntetyczny jest tylko brakujacy kontekst sieciowy: ile PV przypisujemy do feedera, ile wynosi lokalny popyt i jaki limit przeplywu zwrotnego zakladamy. Wszystkie losowe albo scenariuszowe parametry zapisujemy z seedem i zakresem, zeby wynik byl powtarzalny i audytowalny.

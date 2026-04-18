@@ -45,6 +45,7 @@ Proponowane pliki:
 - `data/fetch_mv_lines.py`
 - `data/fetch_pvgis.py`
 - `data/build_sample_datasets.py`
+- `data/generate_training_dataset.py`
 
 Kolejne adaptery danych, jesli beda potrzebne po POC:
 
