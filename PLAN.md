@@ -28,6 +28,19 @@ W debacie „Transformacja energetyczna jako wzmacnianie polskiej gospodarki - m
 
 Nasz projekt wpisuje się bezpośrednio w te priorytety: **digitalizacja** procesów OSD, wykorzystanie **zmian technologicznych** (AI, predykcja), odpowiedź na **wyzwania regulacyjne** związane z przyłączaniem OZE oraz **optymalizacja dopasowania profilu produkcji do zużycia** - dokładnie to, o czym mówi prezes Lot.
 
+## Kontekst branżowy – wizja Taurona
+
+Prezes Taurona, **Grzegorz Lot**, podczas Rady Programowej podkreślał kluczowe wyzwania i kierunki rozwoju:
+
+> "Perspektywa klient, digitalizacja, kwestia jak rynku, regulacji oraz oczywiście zmian technologicznych to są takie wydarzenia, które ściągną tutaj wiele osób."
+
+> "Każda kolejna rada programowa to duża dynamika i ścieranie się różnych poglądów. Rozliczamy dyskusję o przyszłości od tego, żeby podsumować co udało się zrealizować z naszych obietnic, deklaracji w poprzednich wydarzeniach."
+
+*Źródło: Euro PowerOW OZ Power, 30-31 marca 2026 roku, Westin Warsaw Hotel*
+
+Nasz projekt wpisuje się bezpośrednio w te priorytety: **digitalizacja** procesów OSD, wykorzystanie **zmian technologicznych** (AI, predykcja) i odpowiedź na **wyzwania regulacyjne** związane z przyłączaniem OZE.
+
+
 ## Hipoteza
 
 Jesli polaczymy zaufane prognozy meteorologiczne, historyczna generacje OZE, publiczne informacje o dostepnych mocach przylaczeniowych i syntetyczne scenariusze ograniczen, mozemy pokazac Tauron Dystrybucja uzyteczny model predykcyjny dla OSD. Po formalnym dolaczeniu bezpiecznych danych OSD ten sam model moze zostac rozszerzony do poziomu operacyjnego.
