@@ -4,7 +4,7 @@ import { MapPin, Clock, Activity, Gauge } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { RiskGauge } from "./risk-gauge"
 import { ForecastChart } from "./forecast-chart"
-import type { LocationData } from "@/lib/data"
+import type { LocationData } from "@/lib/api"
 
 interface LocationDetailsProps {
   location: LocationData

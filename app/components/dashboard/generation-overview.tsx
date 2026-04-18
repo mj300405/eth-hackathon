@@ -13,12 +13,53 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts"
-import { hourlyGenerationData, riskyAreasData } from "@/lib/data"
+import type { HourlyGenerationData, MVLineData } from "@/lib/api"
 
-export function GenerationOverview() {
-  const totalSolar = hourlyGenerationData.reduce((sum, d) => sum + d.solar, 0)
-  const totalWind = hourlyGenerationData.reduce((sum, d) => sum + d.wind, 0)
-  const peakHour = hourlyGenerationData.reduce((max, d) => (d.total > max.total ? d : max), hourlyGenerationData[0])
+interface GenerationOverviewProps {
+  hourlyGenerationData: HourlyGenerationData[]
+  mvLines: MVLineData[]
+  selectedLine?: MVLineData | null
+  onSelectLine?: (line: MVLineData) => void
+}
+
+export function GenerationOverview({ hourlyGenerationData, mvLines, selectedLine, onSelectLine }: GenerationOverviewProps) {
+  const chartData = selectedLine
+    ? selectedLine.forecast.map((point) => ({
+        hour: point.hour,
+        solar: point.generation_mw,
+        wind: 0,
+        total: point.generation_mw,
+        probability: point.probability,
+        reverse_flow_kw: point.reverse_flow_kw,
+        reverse_flow_limit_kw: point.reverse_flow_limit_kw,
+      }))
+    : hourlyGenerationData.map((point) => ({
+        hour: point.hour,
+        solar: point.solar,
+        wind: point.wind,
+        total: point.total,
+        probability: null as number | null,
+        reverse_flow_kw: null as number | null,
+        reverse_flow_limit_kw: null as number | null,
+      }))
+
+  if (chartData.length === 0) {
+    return (
+      <Card>
+        <CardContent className="py-8 text-center text-muted-foreground">
+          Brak danych generacji z API.
+        </CardContent>
+      </Card>
+    )
+  }
+
+  const totalSolar = chartData.reduce((sum, d) => sum + d.solar, 0)
+  const totalWind = chartData.reduce((sum, d) => sum + d.wind, 0)
+  const peakHour = chartData.reduce((max, d) => (d.total > max.total ? d : max), chartData[0])
+  const scopeLabel = selectedLine
+    ? `${selectedLine.feeder_id} · ${selectedLine.mv_line_id}`
+    : "Wszystkie linie SN (suma)"
+  const totalLabel = selectedLine ? "MWh (linia)" : "MWh (suma)"
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -26,10 +67,13 @@ export function GenerationOverview() {
       <Card className="lg:col-span-2">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-lg font-semibold flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-[#e2007a]" />
-              Prognoza generacji OZE (24h)
-            </CardTitle>
+            <div>
+              <CardTitle className="text-lg font-semibold flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-[#e2007a]" />
+                Prognoza generacji OZE (24h)
+              </CardTitle>
+              <p className="text-xs text-muted-foreground mt-1">{scopeLabel}</p>
+            </div>
             <div className="flex items-center gap-4 text-sm">
               <div className="flex items-center gap-1.5">
                 <div className="w-3 h-3 rounded-sm bg-[#f472b6]" />
@@ -45,7 +89,7 @@ export function GenerationOverview() {
         <CardContent>
           <div className="h-[280px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={hourlyGenerationData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+              <BarChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
                 <XAxis
                   dataKey="hour"
@@ -83,85 +127,89 @@ export function GenerationOverview() {
             <div className="flex items-center gap-2">
               <Sun className="w-5 h-5 text-[#f472b6]" />
               <div>
-                <p className="text-xs text-muted-foreground">Fotowoltaika (suma)</p>
-                <p className="text-lg font-semibold">{totalSolar.toFixed(0)} MWh</p>
+                <p className="text-xs text-muted-foreground">Fotowoltaika</p>
+                <p className="text-lg font-semibold">{totalSolar.toFixed(1)} {totalLabel}</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <Wind className="w-5 h-5 text-[#be185d]" />
               <div>
-                <p className="text-xs text-muted-foreground">Wiatr (suma)</p>
-                <p className="text-lg font-semibold">{totalWind.toFixed(0)} MWh</p>
+                <p className="text-xs text-muted-foreground">Wiatr</p>
+                <p className="text-lg font-semibold">{totalWind.toFixed(1)} {totalLabel}</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-[#e2007a]" />
               <div>
                 <p className="text-xs text-muted-foreground">Szczyt generacji</p>
-                <p className="text-lg font-semibold">{peakHour.hour} ({peakHour.total.toFixed(1)} MW)</p>
+                <p className="text-lg font-semibold">{peakHour.hour} ({peakHour.total.toFixed(2)} MW)</p>
               </div>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Risky Areas List */}
+      {/* Top risky MV lines */}
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-lg font-semibold flex items-center gap-2">
             <AlertTriangle className="w-5 h-5 text-[#e2007a]" />
-            Obszary wysokiego ryzyka
+            Linie SN — pilne
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            {riskyAreasData.map((area, index) => (
-              <div
-                key={area.location}
-                className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+          <div className="space-y-2">
+            {[...mvLines].sort((a, b) => b.risk_score - a.risk_score).slice(0, 6).map((line, index) => (
+              <button
+                key={line.mv_line_id}
+                type="button"
+                onClick={() => onSelectLine?.(line)}
+                className="w-full flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors text-left"
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 min-w-0">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white ${
-                      area.risk_level === "WYSOKIE"
-                        ? "bg-[#e2007a]"
-                        : area.risk_level === "SREDNIE"
-                        ? "bg-[#f472b6]"
-                        : "bg-[#fbcfe8]"
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0 ${
+                      line.risk_level === "WYSOKIE"
+                        ? "bg-[#ef4444]"
+                        : line.risk_level === "SREDNIE"
+                        ? "bg-[#f59e0b]"
+                        : "bg-[#22c55e]"
                     }`}
                   >
                     {index + 1}
                   </div>
-                  <div>
-                    <p className="font-medium text-sm">{area.location}</p>
-                    <p className="text-xs text-muted-foreground">Szczyt: {area.peak_hour}</p>
+                  <div className="min-w-0">
+                    <p className="font-medium text-sm truncate">{line.feeder_id}</p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {line.mv_line_id} · szczyt {line.peak_hour} · {line.overload_hours}h przeciąż.
+                    </p>
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="text-right shrink-0 ml-2">
                   <Badge
                     variant="outline"
                     className={`text-xs ${
-                      area.risk_level === "WYSOKIE"
-                        ? "border-[#e2007a] text-[#e2007a] bg-pink-50"
-                        : area.risk_level === "SREDNIE"
-                        ? "border-[#f472b6] text-[#be185d] bg-pink-50"
-                        : "border-[#fbcfe8] text-[#f472b6] bg-pink-50"
+                      line.risk_level === "WYSOKIE"
+                        ? "border-[#ef4444] text-[#ef4444] bg-red-50"
+                        : line.risk_level === "SREDNIE"
+                        ? "border-[#f59e0b] text-[#f59e0b] bg-amber-50"
+                        : "border-[#22c55e] text-[#22c55e] bg-green-50"
                     }`}
                   >
-                    {area.risk_score}%
+                    {line.risk_score}
                   </Badge>
                   <p className="text-xs text-muted-foreground mt-1">
-                    +{area.expected_overload}% przeciążenie
+                    {Math.round(line.max_probability * 100)}% P(ov)
                   </p>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
           <div className="mt-4 pt-4 border-t">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">Łącznie obszarów wysokiego ryzyka:</span>
-              <span className="font-semibold text-[#e2007a]">
-                {riskyAreasData.filter((a) => a.risk_level === "WYSOKIE").length}
+              <span className="text-muted-foreground">Linie wysokiego ryzyka:</span>
+              <span className="font-semibold text-[#ef4444]">
+                {mvLines.filter((l) => l.risk_level === "WYSOKIE").length} / {mvLines.length}
               </span>
             </div>
           </div>
