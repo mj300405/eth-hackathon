@@ -1,8 +1,9 @@
 "use client"
 
-import { Calendar, Zap } from "lucide-react"
+import { Calendar, Zap, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
+import Link from "next/link"
 
 const navItems = [
   { label: "Dashboard", active: true },
@@ -17,15 +18,23 @@ export function Header() {
   return (
     <header className="border-b border-border bg-card">
       <div className="flex items-center justify-between px-6 py-4">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-[#e2007a]">
-            <Zap className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-[#e2007a]">GridFlex OZE</h1>
-            <p className="text-sm text-muted-foreground">
-              System predykcji przeciążeń sieci dystrybucyjnej
-            </p>
+        <div className="flex items-center gap-4">
+          <Link href="/">
+            <Button variant="ghost" size="sm">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Powrót
+            </Button>
+          </Link>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-[#e2007a]">
+              <Zap className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-[#e2007a]">GridFlex OZE</h1>
+              <p className="text-sm text-muted-foreground">
+                System predykcji przeciążeń sieci dystrybucyjnej
+              </p>
+            </div>
           </div>
         </div>
 

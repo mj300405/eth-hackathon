@@ -10,7 +10,7 @@ interface RiskGaugeProps {
 function getRiskColor(score: number): string {
   if (score <= 33) return "#22c55e"
   if (score <= 66) return "#f59e0b"
-  return "#ef4444"
+  return "#e2007a"
 }
 
 function getRiskLevelLabel(level: "NISKIE" | "SREDNIE" | "WYSOKIE"): string {

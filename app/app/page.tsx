@@ -1,85 +1,136 @@
 "use client"
 
-import { useState, useCallback } from "react"
-import dynamic from "next/dynamic"
-import { Header } from "@/components/dashboard/header"
-import { LocationDetails } from "@/components/dashboard/location-details"
-import { Recommendations } from "@/components/dashboard/recommendations"
-import { LocationsTable } from "@/components/dashboard/locations-table"
-import { Footer } from "@/components/dashboard/footer"
-import { GenerationOverview } from "@/components/dashboard/generation-overview"
-import { locationsData, type LocationData } from "@/lib/data"
-import { Card, CardContent } from "@/components/ui/card"
-import { MapPin } from "lucide-react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Building2, Users, ArrowRight } from "lucide-react"
+import Link from "next/link"
 
-const PolandMap = dynamic(
-  () => import("@/components/dashboard/poland-map").then((mod) => mod.PolandMap),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="h-full w-full flex items-center justify-center bg-muted rounded-lg">
-        <div className="animate-pulse text-muted-foreground">Ładowanie mapy...</div>
-      </div>
-    ),
-  }
-)
-
-export default function Dashboard() {
-  const [selectedLocation, setSelectedLocation] = useState<LocationData | null>(locationsData[0])
-
-  const handleSelectLocation = useCallback((location: LocationData) => {
-    setSelectedLocation(location)
-  }, [])
-
+export default function LandingPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-background">
-      <Header />
-
-      <main className="flex-1 p-6">
-        <div className="flex gap-6 h-[calc(100vh-280px)] min-h-[600px]">
-          {/* Left Column - Map */}
-          <div className="w-3/5">
-            <PolandMap
-              locations={locationsData}
-              selectedLocation={selectedLocation}
-              onSelectLocation={handleSelectLocation}
-            />
-          </div>
-
-          {/* Right Column - Details */}
-          <div className="w-2/5 flex flex-col gap-4 overflow-y-auto">
-            {selectedLocation ? (
-              <>
-                <LocationDetails location={selectedLocation} />
-                <Recommendations
-                  recommendations={selectedLocation.recommendations}
-                  riskLevel={selectedLocation.risk_level}
-                />
-              </>
-            ) : (
-              <Card className="flex-1">
-                <CardContent className="h-full flex flex-col items-center justify-center text-muted-foreground">
-                  <MapPin className="w-12 h-12 mb-4 opacity-50" />
-                  <p className="text-lg font-medium">Wybierz lokalizację</p>
-                  <p className="text-sm">Kliknij marker na mapie, aby zobaczyć szczegóły</p>
-                </CardContent>
-              </Card>
-            )}
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50">
+      {/* Header */}
+      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-lg bg-[#e2007a] flex items-center justify-center">
+                <span className="text-white font-bold text-xl">GF</span>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-[#e2007a]">
+                  GridFlex OZE
+                </h1>
+                <p className="text-xs text-muted-foreground">Inteligentne zarządzanie energią</p>
+              </div>
+            </div>
           </div>
         </div>
+      </header>
 
-        {/* Generation Overview Section */}
-        <div className="mt-6">
-          <GenerationOverview />
-        </div>
+      {/* Main Content */}
+      <main className="flex-1 flex items-center justify-center p-6">
+        <div className="container max-w-6xl">
+          {/* Hero Section */}
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-[#e2007a]">
+              Witaj w GridFlex OZE
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Platforma do zarządzania i predykcji obciążenia sieci energetycznej
+            </p>
+          </div>
 
-        {/* Bottom Panel - Table */}
-        <div className="mt-6">
-          <LocationsTable locations={locationsData} onSelectLocation={handleSelectLocation} />
+          {/* Cards Section */}
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {/* TAURON Card */}
+            <Card className="group hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border-2 hover:border-[#e2007a]">
+              <CardHeader className="text-center pb-4">
+                <div className="mx-auto mb-4 h-20 w-20 rounded-full bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Building2 className="h-10 w-10 text-[#e2007a]" />
+                </div>
+                <CardTitle className="text-2xl">TAURON</CardTitle>
+                <CardDescription className="text-base">
+                  Panel zarządzania dla operatora sieci
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <ul className="space-y-2 text-sm text-muted-foreground mb-6">
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-[#e2007a]" />
+                    Monitoring obciążenia sieci w czasie rzeczywistym
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-[#e2007a]" />
+                    Predykcja przeciążeń lokalnych
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-[#e2007a]" />
+                    Rekomendacje zarządzania energią
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-[#e2007a]" />
+                    Analiza danych z instalacji OZE
+                  </li>
+                </ul>
+                <Link href="/tauron" className="block">
+                  <Button className="w-full bg-[#e2007a] hover:bg-[#c00066] group">
+                    Przejdź do panelu
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            {/* CLIENT Card */}
+            <Card className="group hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border-2 hover:border-[#e2007a]">
+              <CardHeader className="text-center pb-4">
+                <div className="mx-auto mb-4 h-20 w-20 rounded-full bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Users className="h-10 w-10 text-[#e2007a]" />
+                </div>
+                <CardTitle className="text-2xl">Klient</CardTitle>
+                <CardDescription className="text-base">
+                  Informacje i wsparcie dla użytkowników
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <ul className="space-y-2 text-sm text-muted-foreground mb-6">
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-[#e2007a]" />
+                    Chatbot po śląsku do obsługi zapytań
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-[#e2007a]" />
+                    Informacje o taryfach energetycznych
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-[#e2007a]" />
+                    Predykcja okresów darmowej energii
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-[#e2007a]" />
+                    Porady dotyczące oszczędzania energii
+                  </li>
+                </ul>
+                <Link href="/client" className="block">
+                  <Button className="w-full bg-[#e2007a] hover:bg-[#c00066] group">
+                    Przejdź do portalu
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </main>
 
-      <Footer />
+      {/* Footer */}
+      <footer className="border-t bg-white/80 backdrop-blur-sm mt-12">
+        <div className="container mx-auto px-6 py-6">
+          <p className="text-center text-sm text-muted-foreground">
+            Made during ETHSilesia 2026 hackathon
+          </p>
+        </div>
+      </footer>
     </div>
   )
 }
