@@ -1,0 +1,13 @@
+services:
+  api:
+    environment:
+      CORS_ALLOW_ORIGINS: http://54.37.139.42:3000
+    restart: unless-stopped
+
+  frontend:
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://54.37.139.42:8000
+    restart: unless-stopped
+
+  model:
+    restart: unless-stopped
