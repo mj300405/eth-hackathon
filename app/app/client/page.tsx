@@ -1,15 +1,10 @@
 "use client"
 
-import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import {
-  MessageCircle,
-  Send,
   Zap,
   TrendingDown,
   Clock,
@@ -19,43 +14,9 @@ import {
   Info
 } from "lucide-react"
 import Link from "next/link"
-
-interface Message {
-  role: "user" | "assistant"
-  content: string
-}
+import ChatbotWidget from "@/components/ChatbotWidget"
 
 export default function ClientPage() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: "assistant",
-      content: "Witej! Ja Ci pōmogã ze wszyjskim, co trzeba wiedzieć ô prōndzie. Co Ciã interesuje?"
-    }
-  ])
-  const [input, setInput] = useState("")
-
-  const handleSendMessage = () => {
-    if (!input.trim()) return
-
-    const userMessage: Message = { role: "user", content: input }
-    setMessages(prev => [...prev, userMessage])
-
-    // Simulated responses in Silesian dialect
-    setTimeout(() => {
-      const responses = [
-        "Nō to ja Ci powiyм, że akurat teroz prōnd bãdzie najtańszy ôd 22:00 do 6:00 rańo. Nojlepij wtynczos pralkã lebo zmywarkã!",
-        "Patrz, jak bãdziesz używać prōndu w nocy, to porã groszy ôszczydzisz. To siã we rachunku pokŏże!",
-        "Ô taryfach? Nō mōmy taryfa G11 i G12. G12 to sie ôpłŏci jak fest używosz prōnd w nocy.",
-        "Za darmo prōnd bãdzie jak bedzie moc fest generowana z OZE i mało obciōnżynie. Zobocz w zakładce 'Predykcje'!",
-        "Nojlepij używej energochłonnych sprzyntōw jak prōnd je tańszy, to znaczy w nocy!"
-      ]
-      const randomResponse = responses[Math.floor(Math.random() * responses.length)]
-      const assistantMessage: Message = { role: "assistant", content: randomResponse }
-      setMessages(prev => [...prev, assistantMessage])
-    }, 500)
-
-    setInput("")
-  }
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50">
@@ -88,12 +49,8 @@ export default function ClientPage() {
 
       {/* Main Content */}
       <main className="flex-1 p-6">
-        <Tabs defaultValue="chatbot" className="container max-w-7xl mx-auto">
-          <TabsList className="grid w-full grid-cols-3 mb-6">
-            <TabsTrigger value="chatbot" className="gap-2">
-              <MessageCircle className="h-4 w-4" />
-              Chatbot po śląsku
-            </TabsTrigger>
+        <Tabs defaultValue="tariffs" className="container max-w-7xl mx-auto">
+          <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="tariffs" className="gap-2">
               <Euro className="h-4 w-4" />
               Taryfy
@@ -103,55 +60,6 @@ export default function ClientPage() {
               Predykcje
             </TabsTrigger>
           </TabsList>
-
-          {/* Chatbot Tab */}
-          <TabsContent value="chatbot">
-            <Card className="h-[calc(100vh-280px)]">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MessageCircle className="h-5 w-5 text-[#e2007a]" />
-                  Asystent po śląsku
-                </CardTitle>
-                <CardDescription>
-                  Pytej ô wszyjsko, co Ciã interesuje ô prōndzie i taryfach
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-col h-[calc(100%-120px)]">
-                <ScrollArea className="flex-1 pr-4 mb-4">
-                  <div className="space-y-4">
-                    {messages.map((message, index) => (
-                      <div
-                        key={index}
-                        className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-                      >
-                        <div
-                          className={`max-w-[80%] rounded-lg px-4 py-2 ${
-                            message.role === "user"
-                              ? "bg-[#e2007a] text-white"
-                              : "bg-muted"
-                          }`}
-                        >
-                          <p className="text-sm">{message.content}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </ScrollArea>
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Napisz wiadōmość..."
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-                    className="flex-1"
-                  />
-                  <Button onClick={handleSendMessage} className="bg-[#e2007a] hover:bg-[#c00066]">
-                    <Send className="h-4 w-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
 
           {/* Tariffs Tab */}
           <TabsContent value="tariffs">
@@ -361,6 +269,9 @@ export default function ClientPage() {
           </p>
         </div>
       </footer>
+
+      {/* Chatbot Widget */}
+      <ChatbotWidget />
     </div>
   )
 }
