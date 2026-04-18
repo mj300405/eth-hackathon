@@ -28,6 +28,31 @@ W debacie „Transformacja energetyczna jako wzmacnianie polskiej gospodarki - m
 
 Nasz projekt wpisuje się bezpośrednio w te priorytety: **digitalizacja** procesów OSD, wykorzystanie **zmian technologicznych** (AI, predykcja), odpowiedź na **wyzwania regulacyjne** związane z przyłączaniem OZE oraz **optymalizacja dopasowania profilu produkcji do zużycia** - dokładnie to, o czym mówi prezes Lot.
 
+## Program AI w grupie Tauron
+
+**Edwin Chmielewski**, dyrektor programu AI w grupie Tauron, w podcaście o programie AI wyjaśnił strategię i kierunki rozwoju sztucznej inteligencji w Tauronie:
+
+> "Przed sztuczną inteligencją w energetyce nie uciekniemy. Nie uciekniemy przed sztuczną inteligencją praktycznie w każdej dziedzinie życia."
+
+> "Celem strategicznym programu AI w grupie Tauron to jest przede wszystkim wsparcie w realizacji strategii poszczególnych spółek w grupie. Nie oznacza to, że chcemy wdrażać sztuczną inteligencję samą dla siebie, ale sztuczna inteligencja ma mieć określoną zasadność biznesową."
+
+> "Przy blisko 6 milionach klientów, jakie posiada grupa Tauron, te wymagania nabierają szczególnego znaczenia."
+
+O charakterze programu:
+
+> "Program AI realizowany w grupie Tauron ma mieć charakter otwarty. Co to oznacza w praktyce? Oznacza to, że inicjatywy mogą być zgłaszane przez cały okres życia programu, który został określony do grudnia 2027 roku."
+
+> "Świadomość sztucznej inteligencji w grupie Tauron jest bardzo wysoka i nie ma tygodnia, abyśmy nie dostawali zgłoszeń, wymagań lub propozycji zajęcia się jednym konkretnym tematem, jednym konkretnym projektem, jedną konkretną technologią."
+
+O współpracy z partnerami zewnętrznymi:
+
+> "W Tauron Obsługa klienta posiadamy wyjątkowy zespół ekspertek i ekspertów IT. Wśród nich jest także grono osób, które specjalizuje się w obszarze sztucznej inteligencji."
+
+> "Zapraszamy producentów oraz dostawców, którzy posiadają stabilne i bezpieczne rozwiązanie AI do wspólnego dialogu technologicznego. My oferujemy ambitne wyzwania, zaangażowanie i bardzo dużo danych, którymi możemy zenergetyzować sztuczną inteligencję."
+
+*(źródło: Podcast o programie AI w grupie Tauron, Tauron Obsługa Klienta, prowadzenie: Martyna Daczkowska)*
+
+Nasz projekt demonstracyjny **GridFlex OZE** realizuje te założenia: łączy **dane operacyjne OSD** z **AI i predykcją**, odpowiada na **konkretne potrzeby biznesowe** (zarządzanie przeciążeniami sieci), wykorzystuje **zasoby własne** (dane, ekspertyza) oraz jest otwarty na **współpracę z dostawcami technologii**.
 ## Kontekst branżowy – wizja Taurona
 
 Prezes Taurona, **Grzegorz Lot**, podczas Rady Programowej podkreślał kluczowe wyzwania i kierunki rozwoju:
