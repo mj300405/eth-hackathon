@@ -15,6 +15,7 @@ import argparse
 import csv
 import json
 import math
+import random
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
@@ -25,9 +26,8 @@ START_TS = datetime(2026, 4, 18, 0, 0, tzinfo=WARSAW_TZ)
 FETCHED_AT = datetime(2026, 4, 17, 18, 0, tzinfo=WARSAW_TZ)
 
 
-FEEDER_TEMPLATES = [
-    {
-        "area_type": "residential",
+FEEDER_TEMPLATES = {
+    "residential": {
         "capacity_kw": 2200,
         "reverse_limit_kw": 330,
         "base_demand_kw": 520,
@@ -37,8 +37,7 @@ FEEDER_TEMPLATES = [
         "east_west_share": 0.30,
         "flat_share": 0.15,
     },
-    {
-        "area_type": "mixed",
+    "mixed": {
         "capacity_kw": 2600,
         "reverse_limit_kw": 260,
         "base_demand_kw": 710,
@@ -48,8 +47,7 @@ FEEDER_TEMPLATES = [
         "east_west_share": 0.37,
         "flat_share": 0.15,
     },
-    {
-        "area_type": "industrial",
+    "industrial": {
         "capacity_kw": 3100,
         "reverse_limit_kw": 920,
         "base_demand_kw": 1180,
@@ -59,19 +57,7 @@ FEEDER_TEMPLATES = [
         "east_west_share": 0.25,
         "flat_share": 0.40,
     },
-    {
-        "area_type": "residential",
-        "capacity_kw": 1800,
-        "reverse_limit_kw": 260,
-        "base_demand_kw": 390,
-        "pv_capacity_kwp": 820,
-        "oze_density_index": 0.81,
-        "south_share": 0.62,
-        "east_west_share": 0.26,
-        "flat_share": 0.12,
-    },
-    {
-        "area_type": "rural",
+    "rural": {
         "capacity_kw": 1600,
         "reverse_limit_kw": 250,
         "base_demand_kw": 310,
@@ -81,7 +67,23 @@ FEEDER_TEMPLATES = [
         "east_west_share": 0.30,
         "flat_share": 0.12,
     },
-]
+}
+
+
+def classify_area(length_km: float, feature_hash: int) -> str:
+    bucket = feature_hash % 10
+    if length_km >= 5.0:
+        return "rural"
+    if length_km >= 1.5:
+        return "industrial" if bucket < 3 else "mixed"
+    if length_km >= 0.5:
+        return "mixed" if bucket < 5 else "residential"
+    return "residential"
+
+
+def jitter(seed: int, salt: int, low: float, high: float) -> float:
+    rng = random.Random(seed * 10007 + salt)
+    return low + (high - low) * rng.random()
 
 
 def haversine_km(left: list[float], right: list[float]) -> float:
@@ -119,32 +121,48 @@ def iso(ts: datetime) -> str:
     return ts.isoformat()
 
 
-def build_feeders(features: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+def build_feeders(
+    features: list[dict[str, Any]],
+    max_feeders: int | None = None,
+    location_id: str = "gliwice",
+    id_prefix: str = "GLW",
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     feeder_rows: list[dict[str, Any]] = []
     orientation_rows: list[dict[str, Any]] = []
 
-    for idx, feature in enumerate(features[: len(FEEDER_TEMPLATES)], start=1):
-        template = FEEDER_TEMPLATES[idx - 1]
+    selected = features if max_feeders is None else features[:max_feeders]
+
+    for idx, feature in enumerate(selected, start=1):
         coords = feature["geometry"]["coordinates"]
         lat, lon = centroid(coords)
         length = line_length_km(coords)
-        feeder_id = f"gliwice_f{idx:02d}"
+        mv_line_id = feature["properties"]["mv_line_id"]
+        feature_hash = abs(hash(mv_line_id))
+        area_type = classify_area(length, feature_hash)
+        template = FEEDER_TEMPLATES[area_type]
 
+        capacity_kw = round(template["capacity_kw"] * jitter(feature_hash, 1, 0.85, 1.20), 1)
+        pv_capacity_kwp = round(template["pv_capacity_kwp"] * jitter(feature_hash, 2, 0.75, 1.30), 1)
+        base_demand_kw = round(template["base_demand_kw"] * jitter(feature_hash, 3, 0.80, 1.25), 1)
+        reverse_limit_kw = round(template["reverse_limit_kw"] * jitter(feature_hash, 4, 0.70, 1.25), 1)
+        oze_density_index = round(max(0.1, min(0.98, template["oze_density_index"] * jitter(feature_hash, 5, 0.85, 1.15))), 3)
+
+        feeder_id = f"{location_id}_f{idx:03d}"
         feeder_rows.append(
             {
                 "feeder_id": feeder_id,
-                "branch_location_id": "gliwice",
-                "mv_line_id": feature["properties"]["mv_line_id"],
-                "feeder_name": f"GLW-DEMO-F{idx:02d}",
+                "branch_location_id": location_id,
+                "mv_line_id": mv_line_id,
+                "feeder_name": f"{id_prefix}-DEMO-F{idx:03d}",
                 "centroid_lat": f"{lat:.6f}",
                 "centroid_lon": f"{lon:.6f}",
                 "length_km": f"{length:.3f}",
-                "synthetic_capacity_kw": template["capacity_kw"],
-                "synthetic_reverse_flow_limit_kw": template["reverse_limit_kw"],
-                "synthetic_base_demand_kw": template["base_demand_kw"],
-                "synthetic_pv_capacity_kwp": template["pv_capacity_kwp"],
-                "area_type": template["area_type"],
-                "oze_density_index": template["oze_density_index"],
+                "synthetic_capacity_kw": capacity_kw,
+                "synthetic_reverse_flow_limit_kw": reverse_limit_kw,
+                "synthetic_base_demand_kw": base_demand_kw,
+                "synthetic_pv_capacity_kwp": pv_capacity_kwp,
+                "area_type": area_type,
+                "oze_density_index": oze_density_index,
                 "is_synthetic": "true",
                 "source_note": "OSM geometry proxy; electrical parameters synthetic for POC",
             }
@@ -386,8 +404,14 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--mv-lines",
-        default="data/samples/mv_line_geometries_gliwice_sample.geojson",
-        help="Input MV line GeoJSON sample.",
+        default="data/processed/mv_line_geometries_gliwice.geojson",
+        help="Input MV line GeoJSON file.",
+    )
+    parser.add_argument(
+        "--max-feeders",
+        type=int,
+        default=None,
+        help="Optional cap on feeder count (default: one feeder per line in the input).",
     )
     parser.add_argument(
         "--output-dir",
@@ -413,7 +437,7 @@ def main() -> None:
     geojson = read_geojson(Path(args.mv_lines))
     imgw_seed = read_imgw_seed(Path(args.imgw_weather))
     pvgis_profile = read_pvgis_profile(Path(args.pvgis_profile))
-    feeders, orientations = build_feeders(geojson["features"])
+    feeders, orientations = build_feeders(geojson["features"], max_feeders=args.max_feeders)
     weather_rows = build_weather(imgw_seed)
     generation, demand, constraints, risk = build_hourly_outputs(
         feeders,

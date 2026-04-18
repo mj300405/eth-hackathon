@@ -10,11 +10,14 @@ and proxies prediction requests to the model service.
 ```text
 GET /health
 GET /locations
+GET /dashboard
 GET /predictions/locations
 GET /predictions/feeders
 GET /metrics
 ```
 
+`/dashboard` returns the UI contract used by the Next.js app: locations, hourly
+generation and top risky areas derived from model-service predictions.
 `/predictions/locations` returns one record per `timestamp + location_id`.
 `/predictions/feeders` returns one record per `timestamp + feeder_id`.
 
