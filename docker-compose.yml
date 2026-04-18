@@ -63,9 +63,12 @@ services:
       NEXT_TELEMETRY_DISABLED: "1"
     ports:
       - "3000:3000"
+    volumes:
+      - frontend-cache:/app/.next/cache
     depends_on:
       api:
         condition: service_healthy
 
 volumes:
   model-artifacts:
+  frontend-cache:
