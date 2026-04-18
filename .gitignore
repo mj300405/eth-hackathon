@@ -19,7 +19,9 @@ data/processed/
 *.parquet
 *.duckdb
 
+# Local model outputs
+model/artifacts/
+
 # Environment
 .env
 .env.*
-

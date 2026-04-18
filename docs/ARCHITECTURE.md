@@ -59,27 +59,27 @@ Kolejne adaptery danych, jesli beda potrzebne po POC:
 
 Odpowiada za:
 
-- baseline prognozy PV,
-- opcjonalna prognoze wiatru,
-- walidacje historyczna,
-- zapis prognoz godzinowych.
+- przygotowanie cech do predykcji przeciazenia,
+- trening baseline modelu tabularnego,
+- predykcje `target_overload_probability`,
+- walidacje na temporalnym train/validation/test split.
 
-Proponowane pliki:
+Aktualne pliki:
 
-- `model/pv_baseline.py`
-- `model/wind_baseline.py`
-- `notebooks/01_baseline_forecast.ipynb`
+- `model/train_overload_model.py`
+- `model/requirements.txt`
+- `model/README.md`
 
 ### 3. Risk scoring
 
-Odpowiada za zamiane prognozy na wskaznik ryzyka.
+Odpowiada za zamiane prognozy generacji i popytu na prawdopodobienstwo przeciazenia oraz poziom ryzyka.
 
 Proponowany wzor MVP:
 
 ```text
 reverse_flow_kw = max(0, pv_generation_kw - local_demand_kw)
 overload_kw = max(0, reverse_flow_kw - synthetic_reverse_flow_limit_kw)
-risk_score = f(overload_kw, duration, confidence, oze_density_index)
+target_overload_probability = f(overload_kw, duration, confidence, oze_density_index)
 ```
 
 Gdzie:
@@ -90,11 +90,11 @@ Gdzie:
 - `oze_density_index` - lokalna gestosc OZE,
 - `confidence` - jakosc wejsc: meteo, geometria, zalozenia PV i popytu.
 
-Proponowane pliki:
+Aktualny baseline:
 
-- `model/risk_score.py`
-- `model/build_grid_proxy.py`
-- `model/recommendations.py`
+- `HistGradientBoostingRegressor` ze `scikit-learn`,
+- trening CPU na macOS bez CUDA,
+- artefakty lokalne w `model/artifacts/`, ignorowane przez Git.
 
 ### 4. API albo dashboard
 
@@ -133,12 +133,14 @@ GET /recommendations?location_id=...
 │   ├── processed/
 │   ├── samples/
 │   ├── fetch_mv_lines.py
+│   ├── generate_training_dataset.py
+│   ├── split_training_dataset.py
 │   ├── build_sample_datasets.py
 │   └── README.md
 ├── model/
-│   ├── pv_baseline.py
-│   ├── risk_score.py
-│   └── recommendations.py
+│   ├── README.md
+│   ├── requirements.txt
+│   └── train_overload_model.py
 ├── api/
 │   └── FastAPI backend
 ├── app/
