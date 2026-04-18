@@ -9,18 +9,6 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: 'GridFlex OZE - TAURON',
   description: 'System predykcji przeciążeń sieci dystrybucyjnej',
-  icons: {
-    icon: [
-      {
-        url: '/favicon.svg',
-        type: 'image/svg+xml',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-  },
 }
 
 export default function RootLayout({
