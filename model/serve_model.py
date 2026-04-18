@@ -13,6 +13,7 @@ from typing import Any
 import numpy as np
 from fastapi import FastAPI, HTTPException, Query
 
+from data.ensure_training_dataset import ensure_training_dataset
 from model.predict_overload import (
     aggregate_location_rows,
     feeder_predictions,
@@ -54,6 +55,7 @@ def train_model_if_needed() -> None:
 
 def load_model() -> None:
     global model_artifact
+    ensure_training_dataset()
     train_model_if_needed()
     if not MODEL_PATH.exists():
         raise FileNotFoundError(f"Model artifact not found: {MODEL_PATH}")
