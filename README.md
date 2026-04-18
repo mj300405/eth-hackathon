@@ -48,6 +48,189 @@ Alternatywy:
 
 Dashboard mapowy, ktory na podstawie zaufanych danych pogodowych, publicznych/proxy przebiegow linii SN, prognozy generacji OZE i syntetycznych scenariuszy ograniczen pokazuje, gdzie i kiedy w kolejnym dniu moze pojawic sie wysokie ryzyko dla dalszej integracji prosumentow.
 
+## Jak odpalic pipeline krok po kroku
+
+Ponizsze komendy uruchamiamy z katalogu repo:
+
+```bash
+cd /Users/michal/Desktop/eth-hackathon
+```
+
+### 1. Przygotuj lokalne srodowisko
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r model/requirements.txt
+```
+
+Venv `.venv/` jest lokalny i ignorowany przez Git.
+
+### 2. Odswiez dane z publicznych API
+
+IMGW-PIB, czyli zaufane publiczne meteo:
+
+```bash
+python data/fetch_imgw_weather.py
+```
+
+Wynik:
+
+```text
+data/samples/weather_hourly_gliwice_imgw.csv
+data/raw/imgw_synop_katowice_latest.json
+```
+
+PVGIS/JRC, czyli referencyjny profil produkcji PV:
+
+```bash
+python data/fetch_pvgis.py
+```
+
+Wynik:
+
+```text
+data/samples/pvgis_profile_gliwice.csv
+data/raw/pvgis_gliwice_2020.json
+```
+
+OSM/Overpass, czyli publiczne/proxy linie SN. Do normalnego demo nie trzeba tego odpalac, bo w repo jest juz mala probka:
+
+```bash
+python data/fetch_mv_lines.py \
+  --bbox 50.22,18.55,50.38,18.82 \
+  --output data/processed/mv_line_geometries_gliwice.geojson \
+  --raw-output data/raw/osm_mv_lines_gliwice.overpass.json \
+  --source-label osm_mv_lines_gliwice
+```
+
+Wynik lokalny:
+
+```text
+data/processed/mv_line_geometries_gliwice.geojson
+data/raw/osm_mv_lines_gliwice.overpass.json
+```
+
+Pliki `data/raw/` i `data/processed/` sa ignorowane przez Git.
+
+### 3. Zbuduj male demo 24h
+
+```bash
+python data/build_sample_datasets.py
+```
+
+Wynik:
+
+```text
+data/samples/synthetic_mv_feeders_gliwice.csv
+data/samples/weather_hourly_gliwice_demo.csv
+data/samples/generation_forecast_gliwice_demo.csv
+data/samples/demand_proxy_gliwice_demo.csv
+data/samples/synthetic_grid_constraints_gliwice_demo.csv
+data/samples/risk_hourly_gliwice_demo.csv
+```
+
+Ten krok pokazuje mechanike demo: geometria feederow z publicznego/proxy OSM, ksztalt PV z PVGIS, seed meteo z IMGW, a brakujace dane OSD syntetyczne.
+
+### 4. Wygeneruj dataset ML
+
+```bash
+python data/generate_training_dataset.py
+```
+
+Wynik:
+
+```text
+data/samples/model_training_gliwice_demo.csv
+```
+
+Domyslnie powstaje 30 dni danych godzinowych dla 5 feederow, czyli 3600 rekordow. Najwazniejsze targety:
+
+```text
+target_overload_probability
+target_overload_event
+```
+
+Model ma uczyc sie prawdopodobienstwa przeciazenia w danej godzinie i lokalizacji/feedrze.
+
+### 5. Zrob train/validation/test split
+
+```bash
+python data/split_training_dataset.py
+```
+
+Wynik:
+
+```text
+data/samples/model_training_gliwice_demo_train.csv
+data/samples/model_training_gliwice_demo_validation.csv
+data/samples/model_training_gliwice_demo_test.csv
+data/samples/model_training_gliwice_demo_splits.json
+```
+
+Split jest czasowy, nie losowy:
+
+```text
+train:      2026-04-01 00:00 -> 2026-04-21 23:00
+validation: 2026-04-22 00:00 -> 2026-04-26 11:00
+test:       2026-04-26 12:00 -> 2026-04-30 23:00
+```
+
+Nie mieszamy tych samych godzin miedzy zbiorami, zeby ograniczyc leakage.
+
+### 6. Wytrenuj model
+
+```bash
+python model/train_overload_model.py
+```
+
+Wynik lokalny:
+
+```text
+model/artifacts/overload_probability_model.pkl
+model/artifacts/metrics.json
+model/artifacts/validation_predictions.csv
+model/artifacts/test_predictions.csv
+```
+
+`model/artifacts/` jest ignorowane przez Git, bo to lokalne artefakty treningu.
+
+Aktualny baseline to `HistGradientBoostingRegressor` ze `scikit-learn`, trenowany na CPU. Nie wymaga CUDA, PyTorch ani MLX. Na obecnej probce wynik jest rzedu:
+
+```text
+validation_mae ~= 0.0031
+validation_f1  ~= 0.8455
+test_mae       ~= 0.0028
+test_f1        ~= 0.8595
+```
+
+### 7. Co faktycznie przewiduje model
+
+Docelowo model ma przewidywac:
+
+```text
+P(przeciazenie | prognoza pogody, generacja PV, lokalizacja/feeder, historia przeciazen, popyt, limity sieci)
+```
+
+W MVP nie mamy prawdziwej historii przeciazen ani limitow Tauron Dystrybucja, wiec trenujemy odpowiednik demonstracyjny:
+
+```text
+P(syntetyczne przeciazenie | IMGW/PVGIS/OSM + syntetyczny popyt i syntetyczny limit feedera)
+```
+
+Czyli pipeline jest gotowy pod produkcyjne dane OSD, ale obecny target przeciazenia jest syntetyczny i jawnie oznaczony jako demo.
+
+### 8. Najkrotsze odpalenie, gdy dane API juz sa w repo
+
+```bash
+source .venv/bin/activate
+python data/build_sample_datasets.py
+python data/generate_training_dataset.py
+python data/split_training_dataset.py
+python model/train_overload_model.py
+```
+
 ## Co pokazujemy jury
 
 1. Wybor obszaru: wojewodztwo, powiat, gmina albo punkt/stacja.
