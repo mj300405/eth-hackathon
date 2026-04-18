@@ -15,7 +15,8 @@ venv/
 
 # Local data
 data/raw/
-data/processed/
+data/processed/*
+!data/processed/mv_line_geometries_gliwice.geojson
 *.parquet
 *.duckdb
 
