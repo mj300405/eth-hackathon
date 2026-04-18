@@ -165,10 +165,13 @@ def build_mv_line_payload(feeder_rows: list[dict[str, Any]], horizon_hours: int 
                 continue
             row_limit_kw = as_float(row.get("reverse_flow_limit_kw"))
             row_reverse_flow_kw = as_float(row.get("reverse_flow_kw"))
+            generation_mw = (
+                as_float(row.get("pv_generation_kw")) + as_float(row.get("wind_generation_kw"))
+            ) / 1000.0
             forecast.append(
                 {
                     "hour": hour_label(timestamp),
-                    "generation_mw": round(as_float(row.get("pv_generation_kw")) / 1000.0, 3),
+                    "generation_mw": round(generation_mw, 3),
                     "probability": round(as_float(row.get("predicted_overload_probability")), 4),
                     "reverse_flow_kw": round(row_reverse_flow_kw, 2),
                     "reverse_flow_limit_kw": round(row_limit_kw, 2),
@@ -223,12 +226,13 @@ def build_dashboard_payload(location_records: list[dict[str, Any]], feeder_recor
     for timestamp in timestamps:
         rows = feeder_by_timestamp[timestamp]
         solar_mw = sum(as_float(row.get("pv_generation_kw")) for row in rows) / 1000.0
+        wind_mw = sum(as_float(row.get("wind_generation_kw")) for row in rows) / 1000.0
         hourly_generation.append(
             {
                 "hour": hour_label(timestamp),
                 "solar": round(solar_mw, 2),
-                "wind": 0.0,
-                "total": round(solar_mw, 2),
+                "wind": round(wind_mw, 2),
+                "total": round(solar_mw + wind_mw, 2),
             }
         )
 
@@ -262,7 +266,10 @@ def build_dashboard_payload(location_records: list[dict[str, Any]], feeder_recor
 
         for timestamp in timestamps:
             rows_for_timestamp = feeder_by_location_timestamp[(location_id, timestamp)]
-            generation_kw = sum(as_float(row.get("pv_generation_kw")) for row in rows_for_timestamp)
+            generation_kw = sum(
+                as_float(row.get("pv_generation_kw")) + as_float(row.get("wind_generation_kw"))
+                for row in rows_for_timestamp
+            )
             demand_kw = sum(as_float(row.get("local_demand_kw")) for row in rows_for_timestamp)
             reverse_flow_kw = sum(as_float(row.get("reverse_flow_kw")) for row in rows_for_timestamp)
             reverse_flow_limit_kw = sum(as_float(row.get("reverse_flow_limit_kw")) for row in rows_for_timestamp)

@@ -90,6 +90,7 @@ def feeder_predictions(
                 "risk_level": risk_level(probability_value),
                 "risk_score": round(probability_value * 100),
                 "pv_generation_kw": row.get("pv_generation_kw", ""),
+                "wind_generation_kw": row.get("wind_generation_kw", ""),
                 "local_demand_kw": row.get("synthetic_local_demand_kw", ""),
                 "reverse_flow_kw": row.get("reverse_flow_kw", ""),
                 "reverse_flow_limit_kw": row.get("synthetic_reverse_flow_limit_kw", ""),

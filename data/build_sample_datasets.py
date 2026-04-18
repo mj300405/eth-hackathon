@@ -32,6 +32,8 @@ FEEDER_TEMPLATES = {
         "reverse_limit_kw": 330,
         "base_demand_kw": 520,
         "pv_capacity_kwp": 980,
+        "wind_capacity_kw": 0,
+        "wind_hub_height_m": 0,
         "oze_density_index": 0.72,
         "south_share": 0.55,
         "east_west_share": 0.30,
@@ -42,6 +44,8 @@ FEEDER_TEMPLATES = {
         "reverse_limit_kw": 260,
         "base_demand_kw": 710,
         "pv_capacity_kwp": 1120,
+        "wind_capacity_kw": 120,
+        "wind_hub_height_m": 40,
         "oze_density_index": 0.68,
         "south_share": 0.48,
         "east_west_share": 0.37,
@@ -52,6 +56,8 @@ FEEDER_TEMPLATES = {
         "reverse_limit_kw": 920,
         "base_demand_kw": 1180,
         "pv_capacity_kwp": 1320,
+        "wind_capacity_kw": 250,
+        "wind_hub_height_m": 60,
         "oze_density_index": 0.54,
         "south_share": 0.35,
         "east_west_share": 0.25,
@@ -62,6 +68,8 @@ FEEDER_TEMPLATES = {
         "reverse_limit_kw": 250,
         "base_demand_kw": 310,
         "pv_capacity_kwp": 760,
+        "wind_capacity_kw": 420,
+        "wind_hub_height_m": 80,
         "oze_density_index": 0.77,
         "south_share": 0.58,
         "east_west_share": 0.30,
@@ -146,6 +154,12 @@ def build_feeders(
         base_demand_kw = round(template["base_demand_kw"] * jitter(feature_hash, 3, 0.80, 1.25), 1)
         reverse_limit_kw = round(template["reverse_limit_kw"] * jitter(feature_hash, 4, 0.70, 1.25), 1)
         oze_density_index = round(max(0.1, min(0.98, template["oze_density_index"] * jitter(feature_hash, 5, 0.85, 1.15))), 3)
+        if template["wind_capacity_kw"] > 0:
+            wind_capacity_kw = round(template["wind_capacity_kw"] * jitter(feature_hash, 6, 0.60, 1.30), 1)
+            wind_hub_height_m = template["wind_hub_height_m"]
+        else:
+            wind_capacity_kw = 0.0
+            wind_hub_height_m = 0
 
         feeder_id = f"{location_id}_f{idx:03d}"
         feeder_rows.append(
@@ -161,6 +175,8 @@ def build_feeders(
                 "synthetic_reverse_flow_limit_kw": reverse_limit_kw,
                 "synthetic_base_demand_kw": base_demand_kw,
                 "synthetic_pv_capacity_kwp": pv_capacity_kwp,
+                "synthetic_wind_capacity_kw": wind_capacity_kw,
+                "synthetic_wind_hub_height_m": wind_hub_height_m,
                 "area_type": area_type,
                 "oze_density_index": oze_density_index,
                 "is_synthetic": "true",
@@ -198,18 +214,21 @@ def read_pvgis_profile(path: Path) -> list[dict[str, Any]]:
         return list(csv.DictReader(handle))
 
 
+WIND_CLIMATOLOGICAL_BASELINE_MS = 2.8
+
+
 def weather_at(hour: int, imgw_seed: dict[str, Any] | None) -> dict[str, Any]:
     daylight = max(0.0, math.sin(math.pi * (hour - 5) / 15))
     base_temperature = 8.5
-    base_wind = 2.2
+    base_wind = WIND_CLIMATOLOGICAL_BASELINE_MS
     base_humidity = None
     if imgw_seed:
         base_temperature = float(imgw_seed["temperature_c"])
-        base_wind = float(imgw_seed["wind_speed_ms"])
+        base_wind = max(WIND_CLIMATOLOGICAL_BASELINE_MS, float(imgw_seed["wind_speed_ms"]))
         base_humidity = imgw_seed.get("relative_humidity_pct")
 
     temperature = base_temperature - 2.0 + 8.0 * max(0.0, math.sin(math.pi * (hour - 6) / 15))
-    wind = max(0.1, base_wind + 1.1 * max(0.0, math.sin(math.pi * (hour - 3) / 18)))
+    wind = max(0.1, base_wind + 1.8 * max(0.0, math.sin(math.pi * (hour - 3) / 18)))
     cloud = 68 - 42 * daylight + 8 * math.sin(math.pi * hour / 6)
     radiation = 760 * daylight * (1 - max(0, min(100, cloud)) / 130)
     return {
@@ -268,6 +287,28 @@ def demand_multiplier(area_type: str, hour: int) -> float:
     return 0.48 + 0.34 * morning + 0.42 * evening + 0.05 * workday
 
 
+WIND_REFERENCE_HEIGHT_M = 10.0
+WIND_SHEAR_ALPHA = 0.22
+WIND_CUT_IN_MS = 3.0
+WIND_RATED_MS = 12.0
+WIND_CUT_OUT_MS = 25.0
+
+
+def hub_adjusted_wind_speed(surface_speed_ms: float, hub_height_m: float) -> float:
+    if hub_height_m <= 0 or surface_speed_ms <= 0:
+        return max(0.0, surface_speed_ms)
+    return surface_speed_ms * (hub_height_m / WIND_REFERENCE_HEIGHT_M) ** WIND_SHEAR_ALPHA
+
+
+def wind_power_curve(speed_ms: float) -> float:
+    if speed_ms < WIND_CUT_IN_MS or speed_ms >= WIND_CUT_OUT_MS:
+        return 0.0
+    if speed_ms >= WIND_RATED_MS:
+        return 1.0
+    ratio = (speed_ms - WIND_CUT_IN_MS) / (WIND_RATED_MS - WIND_CUT_IN_MS)
+    return max(0.0, min(1.0, ratio**3))
+
+
 def solar_profile(hour: int, weather: dict[str, Any], orientation: dict[str, Any]) -> float:
     daylight = max(0.0, math.sin(math.pi * (hour - 5) / 15))
     if daylight <= 0:
@@ -317,6 +358,8 @@ def build_hourly_outputs(
         feeder_id = feeder["feeder_id"]
         orientation = orientation_by_feeder[feeder_id]
         pv_capacity = float(feeder["synthetic_pv_capacity_kwp"])
+        wind_capacity = float(feeder.get("synthetic_wind_capacity_kw", 0) or 0)
+        wind_hub_height = float(feeder.get("synthetic_wind_hub_height_m", 0) or 0)
         base_demand = float(feeder["synthetic_base_demand_kw"])
         reverse_limit = float(feeder["synthetic_reverse_flow_limit_kw"])
         oze_density = float(feeder["oze_density_index"])
@@ -331,8 +374,10 @@ def build_hourly_outputs(
             else:
                 pv_kw = pv_capacity * 0.86 * solar_profile(hour, weather, orientation)
                 generation_basis = "synthetic_pv_model_pending_pvgis"
+            hub_wind_ms = hub_adjusted_wind_speed(float(weather["wind_speed_ms"]), wind_hub_height)
+            wind_kw = wind_capacity * wind_power_curve(hub_wind_ms)
             demand_kw = base_demand * demand_multiplier(feeder["area_type"], hour)
-            reverse_flow_kw = max(0.0, pv_kw - demand_kw)
+            reverse_flow_kw = max(0.0, pv_kw + wind_kw - demand_kw)
             overload_kw = max(0.0, reverse_flow_kw - reverse_limit)
             utilization = reverse_flow_kw / reverse_limit if reverse_limit else 0.0
             risk_score = round(
@@ -354,7 +399,7 @@ def build_hourly_outputs(
                     "location_id": "gliwice",
                     "feeder_id": feeder_id,
                     "pv_kw": round(pv_kw, 2),
-                    "wind_kw": 0,
+                    "wind_kw": round(wind_kw, 2),
                     "confidence": 0.62,
                     "generation_basis": generation_basis,
                 }
@@ -460,6 +505,8 @@ def main() -> None:
             "synthetic_reverse_flow_limit_kw",
             "synthetic_base_demand_kw",
             "synthetic_pv_capacity_kwp",
+            "synthetic_wind_capacity_kw",
+            "synthetic_wind_hub_height_m",
             "area_type",
             "oze_density_index",
             "is_synthetic",

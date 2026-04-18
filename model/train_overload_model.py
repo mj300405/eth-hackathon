@@ -43,11 +43,13 @@ FEATURE_COLUMNS = [
     "cloud_cover_pct",
     "solar_radiation_wm2",
     "synthetic_pv_capacity_kwp",
+    "synthetic_wind_capacity_kw",
     "synthetic_base_demand_kw",
     "synthetic_local_demand_kw",
     "synthetic_reverse_flow_limit_kw",
     "oze_density_index",
     "pv_generation_kw",
+    "wind_generation_kw",
     "reverse_flow_kw",
 ]
 

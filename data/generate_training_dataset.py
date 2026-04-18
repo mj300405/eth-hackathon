@@ -27,6 +27,39 @@ AREA_TYPE_ID = {
     "rural": 3,
 }
 
+WIND_CAPACITY_DEFAULT_KW = {
+    "residential": 0.0,
+    "mixed": 120.0,
+    "industrial": 250.0,
+    "rural": 420.0,
+}
+WIND_HUB_HEIGHT_DEFAULT_M = {
+    "residential": 0.0,
+    "mixed": 40.0,
+    "industrial": 60.0,
+    "rural": 80.0,
+}
+WIND_REFERENCE_HEIGHT_M = 10.0
+WIND_SHEAR_ALPHA = 0.22
+WIND_CUT_IN_MS = 3.0
+WIND_RATED_MS = 12.0
+WIND_CUT_OUT_MS = 25.0
+
+
+def hub_adjusted_wind_speed(surface_speed_ms: float, hub_height_m: float) -> float:
+    if hub_height_m <= 0 or surface_speed_ms <= 0:
+        return max(0.0, surface_speed_ms)
+    return surface_speed_ms * (hub_height_m / WIND_REFERENCE_HEIGHT_M) ** WIND_SHEAR_ALPHA
+
+
+def wind_power_curve(speed_ms: float) -> float:
+    if speed_ms < WIND_CUT_IN_MS or speed_ms >= WIND_CUT_OUT_MS:
+        return 0.0
+    if speed_ms >= WIND_RATED_MS:
+        return 1.0
+    ratio = (speed_ms - WIND_CUT_IN_MS) / (WIND_RATED_MS - WIND_CUT_IN_MS)
+    return max(0.0, min(1.0, ratio**3))
+
 
 def read_csv(path: Path) -> list[dict[str, Any]]:
     with path.open(newline="", encoding="utf-8") as handle:
@@ -231,6 +264,14 @@ def build_rows(
             area_type = feeder["area_type"]
             feeder_id = feeder["feeder_id"]
             pv_capacity_kwp = as_float(feeder["synthetic_pv_capacity_kwp"])
+            wind_capacity_kw = as_float(
+                feeder.get("synthetic_wind_capacity_kw"),
+                WIND_CAPACITY_DEFAULT_KW.get(area_type, 0.0),
+            )
+            wind_hub_height_m = as_float(
+                feeder.get("synthetic_wind_hub_height_m"),
+                WIND_HUB_HEIGHT_DEFAULT_M.get(area_type, 0.0),
+            )
             base_demand_kw = as_float(feeder["synthetic_base_demand_kw"])
             reverse_limit_kw = as_float(feeder["synthetic_reverse_flow_limit_kw"])
             oze_density_index = as_float(feeder["oze_density_index"])
@@ -238,6 +279,7 @@ def build_rows(
             pv_scenario_factor = deterministic_factor(seed, day_index, feeder_index, 11, 0.90, 1.06)
             demand_scenario_factor = deterministic_factor(seed, day_index, feeder_index, 23, 0.88, 1.16)
             limit_scenario_factor = deterministic_factor(seed, 0, feeder_index, 37, 0.94, 1.04)
+            wind_scenario_factor = deterministic_factor(seed, day_index, feeder_index, 53, 0.85, 1.10)
 
             pv_kw_per_kwp = as_float(pvgis["pv_kw_per_kwp"])
             pvgis_temperature_c = as_float(pvgis["temperature_c"], 12.0)
@@ -248,9 +290,12 @@ def build_rows(
             solar_radiation_wm2 = as_float(weather["solar_radiation_wm2"]) if weather else 0.0
             demand_index = demand_multiplier(area_type, ts.hour, is_weekend, temperature_c)
             pv_generation_kw = pv_kw_per_kwp * pv_capacity_kwp * pv_scenario_factor
+            hub_wind_ms = hub_adjusted_wind_speed(wind_speed_ms, wind_hub_height_m)
+            wind_capacity_factor = wind_power_curve(hub_wind_ms)
+            wind_generation_kw = wind_capacity_kw * wind_capacity_factor * wind_scenario_factor
             local_demand_kw = base_demand_kw * demand_index * demand_scenario_factor
             effective_reverse_limit_kw = reverse_limit_kw * limit_scenario_factor
-            reverse_flow_kw = max(0.0, pv_generation_kw - local_demand_kw)
+            reverse_flow_kw = max(0.0, pv_generation_kw + wind_generation_kw - local_demand_kw)
             overload_margin_kw = reverse_flow_kw - effective_reverse_limit_kw
             overload_kw = max(0.0, overload_margin_kw)
             overload_ratio = reverse_flow_kw / effective_reverse_limit_kw if effective_reverse_limit_kw else 0.0
@@ -286,11 +331,15 @@ def build_rows(
                     "cloud_cover_pct": round(cloud_cover_pct, 2),
                     "solar_radiation_wm2": round(solar_radiation_wm2, 2),
                     "synthetic_pv_capacity_kwp": round(pv_capacity_kwp * pv_scenario_factor, 2),
+                    "synthetic_wind_capacity_kw": round(wind_capacity_kw, 2),
+                    "synthetic_wind_hub_height_m": round(wind_hub_height_m, 1),
                     "synthetic_base_demand_kw": round(base_demand_kw, 2),
                     "synthetic_local_demand_kw": round(local_demand_kw, 2),
                     "synthetic_reverse_flow_limit_kw": round(effective_reverse_limit_kw, 2),
                     "oze_density_index": round(oze_density_index, 4),
                     "pv_generation_kw": round(pv_generation_kw, 2),
+                    "wind_generation_kw": round(wind_generation_kw, 2),
+                    "wind_capacity_factor": round(wind_capacity_factor, 4),
                     "reverse_flow_kw": round(reverse_flow_kw, 2),
                     "overload_margin_kw": round(overload_margin_kw, 2),
                     "overload_kw": round(overload_kw, 2),

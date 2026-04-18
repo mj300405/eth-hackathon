@@ -17,13 +17,13 @@
       "timestamps": 504,
       "start_timestamp": "2026-04-01T00:00:00+02:00",
       "end_timestamp": "2026-04-21T23:00:00+02:00",
-      "target_event_count": 18470,
-      "target_event_rate": 0.1295,
-      "avg_target_overload_probability": 0.1301,
+      "target_event_count": 18885,
+      "target_event_rate": 0.1324,
+      "avg_target_overload_probability": 0.1329,
       "risk_level_counts": {
-        "high": 15114,
-        "low": 123538,
-        "medium": 3980
+        "high": 15544,
+        "low": 123021,
+        "medium": 4067
       }
     },
     "validation": {
@@ -31,13 +31,13 @@
       "timestamps": 108,
       "start_timestamp": "2026-04-22T00:00:00+02:00",
       "end_timestamp": "2026-04-26T11:00:00+02:00",
-      "target_event_count": 4079,
-      "target_event_rate": 0.1335,
-      "avg_target_overload_probability": 0.1328,
+      "target_event_count": 4163,
+      "target_event_rate": 0.1362,
+      "avg_target_overload_probability": 0.1356,
       "risk_level_counts": {
-        "high": 3314,
-        "low": 26390,
-        "medium": 860
+        "high": 3454,
+        "low": 26306,
+        "medium": 804
       }
     },
     "test": {
@@ -45,13 +45,13 @@
       "timestamps": 108,
       "start_timestamp": "2026-04-26T12:00:00+02:00",
       "end_timestamp": "2026-04-30T23:00:00+02:00",
-      "target_event_count": 3857,
-      "target_event_rate": 0.1262,
-      "avg_target_overload_probability": 0.1272,
+      "target_event_count": 3989,
+      "target_event_rate": 0.1305,
+      "avg_target_overload_probability": 0.13,
       "risk_level_counts": {
-        "high": 3176,
-        "low": 26554,
-        "medium": 834
+        "high": 3278,
+        "low": 26475,
+        "medium": 811
       }
     }
   }
