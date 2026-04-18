@@ -58,7 +58,7 @@ export default function ClientPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50">
       {/* Header */}
       <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4">
@@ -71,11 +71,11 @@ export default function ClientPage() {
                 </Button>
               </Link>
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-green-600 to-blue-600 flex items-center justify-center">
+                <div className="h-10 w-10 rounded-lg bg-[#e2007a] flex items-center justify-center">
                   <Zap className="text-white h-6 w-6" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                  <h1 className="text-2xl font-bold text-[#e2007a]">
                     Portal Klienta
                   </h1>
                   <p className="text-xs text-muted-foreground">Informacje o taryfach i oszczędzaniu energii</p>
@@ -109,7 +109,7 @@ export default function ClientPage() {
             <Card className="h-[calc(100vh-280px)]">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <MessageCircle className="h-5 w-5 text-green-600" />
+                  <MessageCircle className="h-5 w-5 text-[#e2007a]" />
                   Asystent po śląsku
                 </CardTitle>
                 <CardDescription>
@@ -127,7 +127,7 @@ export default function ClientPage() {
                         <div
                           className={`max-w-[80%] rounded-lg px-4 py-2 ${
                             message.role === "user"
-                              ? "bg-green-600 text-white"
+                              ? "bg-[#e2007a] text-white"
                               : "bg-muted"
                           }`}
                         >
@@ -145,7 +145,7 @@ export default function ClientPage() {
                     onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
                     className="flex-1"
                   />
-                  <Button onClick={handleSendMessage} className="bg-green-600 hover:bg-green-700">
+                  <Button onClick={handleSendMessage} className="bg-[#e2007a] hover:bg-[#c00066]">
                     <Send className="h-4 w-4" />
                   </Button>
                 </div>
@@ -203,12 +203,12 @@ export default function ClientPage() {
                       </div>
                       <span className="text-2xl font-bold text-blue-600">0.95 zł</span>
                     </div>
-                    <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg">
+                    <div className="flex items-center justify-between p-4 bg-pink-50 rounded-lg">
                       <div>
                         <span className="text-sm font-medium block">Taryfa nocna</span>
                         <span className="text-xs text-muted-foreground">22:00 - 6:00</span>
                       </div>
-                      <span className="text-2xl font-bold text-green-600">0.45 zł</span>
+                      <span className="text-2xl font-bold text-[#e2007a]">0.45 zł</span>
                     </div>
                   </div>
                   <div className="space-y-2 text-sm">
@@ -234,7 +234,7 @@ export default function ClientPage() {
                 <div className="grid md:grid-cols-3 gap-4">
                   <div className="p-4 bg-muted rounded-lg">
                     <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-green-600" />
+                      <Calendar className="h-4 w-4 text-[#e2007a]" />
                       Planuj pranie
                     </h4>
                     <p className="text-sm text-muted-foreground">
@@ -243,7 +243,7 @@ export default function ClientPage() {
                   </div>
                   <div className="p-4 bg-muted rounded-lg">
                     <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <Zap className="h-4 w-4 text-green-600" />
+                      <Zap className="h-4 w-4 text-[#e2007a]" />
                       Ładuj pojazdy nocą
                     </h4>
                     <p className="text-sm text-muted-foreground">
@@ -252,7 +252,7 @@ export default function ClientPage() {
                   </div>
                   <div className="p-4 bg-muted rounded-lg">
                     <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <TrendingDown className="h-4 w-4 text-green-600" />
+                      <TrendingDown className="h-4 w-4 text-[#e2007a]" />
                       Monitoruj predykcje
                     </h4>
                     <p className="text-sm text-muted-foreground">
@@ -270,7 +270,7 @@ export default function ClientPage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <TrendingDown className="h-5 w-5 text-green-600" />
+                    <TrendingDown className="h-5 w-5 text-[#e2007a]" />
                     Predykcja darmowej energii
                   </CardTitle>
                   <CardDescription>
@@ -279,13 +279,13 @@ export default function ClientPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="p-4 bg-green-50 border-2 border-green-200 rounded-lg">
+                    <div className="p-4 bg-pink-50 border-2 border-pink-200 rounded-lg">
                       <div className="flex items-start justify-between mb-2">
                         <div>
-                          <h4 className="font-semibold text-green-800">Dziś, 13:00 - 15:00</h4>
-                          <p className="text-sm text-green-600">Wysokie prawdopodobieństwo (85%)</p>
+                          <h4 className="font-semibold text-[#c00066]">Dziś, 13:00 - 15:00</h4>
+                          <p className="text-sm text-[#e2007a]">Wysokie prawdopodobieństwo (85%)</p>
                         </div>
-                        <Badge className="bg-green-600">Aktywne</Badge>
+                        <Badge className="bg-[#e2007a]">Aktywne</Badge>
                       </div>
                       <p className="text-sm text-muted-foreground">
                         Wysoka produkcja energii słonecznej + niskie obciążenie sieci = darmowa energia
@@ -328,7 +328,7 @@ export default function ClientPage() {
                 <CardContent>
                   <div className="space-y-3 text-sm">
                     <p className="flex items-start gap-2">
-                      <Zap className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                      <Zap className="h-5 w-5 text-[#e2007a] mt-0.5 flex-shrink-0" />
                       <span>
                         <strong>Wysoka produkcja OZE:</strong> Gdy farmy słoneczne i wiatrowe produkują więcej energii niż potrzeba
                       </span>
