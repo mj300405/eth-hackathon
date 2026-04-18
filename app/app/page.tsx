@@ -1,188 +1,136 @@
 "use client"
 
-import { useState, useCallback, useEffect } from "react"
-import dynamic from "next/dynamic"
-import { Header } from "@/components/dashboard/header"
-import { LocationDetails } from "@/components/dashboard/location-details"
-import { MVLineDetails } from "@/components/dashboard/mv-line-details"
-import { Recommendations } from "@/components/dashboard/recommendations"
-import { MVLinesTable } from "@/components/dashboard/mv-lines-table"
-import { Footer } from "@/components/dashboard/footer"
-import { GenerationOverview } from "@/components/dashboard/generation-overview"
-import { fetchDashboardData, type DashboardData, type LocationData, type MVLineData } from "@/lib/api"
-import { Card, CardContent } from "@/components/ui/card"
-import { MapPin } from "lucide-react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Building2, Users, ArrowRight } from "lucide-react"
+import Link from "next/link"
 
-const PolandMap = dynamic(
-  () => import("@/components/dashboard/poland-map").then((mod) => mod.PolandMap),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="h-full w-full flex items-center justify-center bg-muted rounded-lg">
-        <div className="animate-pulse text-muted-foreground">Ładowanie mapy...</div>
-      </div>
-    ),
-  }
-)
-
-export default function Dashboard() {
-  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null)
-  const [selectedLocation, setSelectedLocation] = useState<LocationData | null>(null)
-  const [selectedLine, setSelectedLine] = useState<MVLineData | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  const loadDashboardData = useCallback(async () => {
-    setIsLoading(true)
-    setError(null)
-    try {
-      const data = await fetchDashboardData()
-      setDashboardData(data)
-      setSelectedLocation((current) => {
-        if (!data.locations.length) return null
-        if (!current) return data.locations[0]
-        return data.locations.find((location) => location.location_id === current.location_id) ?? data.locations[0]
-      })
-      setSelectedLine((current) => {
-        if (!current) return null
-        return data.mv_lines.find((line) => line.mv_line_id === current.mv_line_id) ?? null
-      })
-    } catch (unknownError) {
-      setError(unknownError instanceof Error ? unknownError.message : "Nie udało się pobrać danych z API.")
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
-
-  useEffect(() => {
-    loadDashboardData()
-  }, [loadDashboardData])
-
-  const handleSelectLocation = useCallback((location: LocationData) => {
-    setSelectedLocation(location)
-    setSelectedLine(null)
-  }, [])
-
-  const handleSelectLine = useCallback(
-    (line: MVLineData) => {
-      setSelectedLine(line)
-      setDashboardData((current) => {
-        if (!current) return current
-        const parent = current.locations.find((loc) => loc.location_id === line.location_id)
-        if (parent) setSelectedLocation(parent)
-        return current
-      })
-    },
-    []
-  )
-
-  const locations = dashboardData?.locations ?? []
-  const mvLines = dashboardData?.mv_lines ?? []
-
+export default function LandingPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-background">
-      <Header />
-
-      <main className="flex-1 p-6">
-        {isLoading ? (
-          <Card>
-            <CardContent className="py-12 text-center text-muted-foreground">
-              Ładowanie danych z API...
-            </CardContent>
-          </Card>
-        ) : error ? (
-          <Card>
-            <CardContent className="py-12 text-center text-muted-foreground">
-              <p className="text-lg font-medium text-foreground">API nie zwróciło danych dashboardu</p>
-              <p className="mt-2 text-sm">{error}</p>
-              <button
-                className="mt-4 rounded-md bg-[#e2007a] px-4 py-2 text-sm font-medium text-white hover:bg-[#c00066]"
-                onClick={loadDashboardData}
-              >
-                Odśwież dane
-              </button>
-            </CardContent>
-          </Card>
-        ) : locations.length === 0 ? (
-          <Card>
-            <CardContent className="py-12 text-center text-muted-foreground">
-              API nie zwróciło lokalizacji do wyświetlenia.
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="flex gap-6 h-[calc(100vh-280px)] min-h-[600px]">
-            <div className="w-3/5">
-              <PolandMap
-                locations={locations}
-                mvLines={mvLines}
-                selectedLocation={selectedLocation}
-                selectedLineId={selectedLine?.mv_line_id ?? null}
-                onSelectLocation={handleSelectLocation}
-                onSelectLine={handleSelectLine}
-              />
-            </div>
-
-            <div className="w-2/5 flex flex-col gap-4 overflow-y-auto">
-              {selectedLine ? (
-                <>
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs text-muted-foreground">Wybrana linia SN</p>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setSelectedLine(null)}
-                      className="text-xs"
-                    >
-                      Wróć do oddziału
-                    </Button>
-                  </div>
-                  <MVLineDetails line={selectedLine} />
-                </>
-              ) : selectedLocation ? (
-                <>
-                  <LocationDetails location={selectedLocation} />
-                  <Recommendations
-                    recommendations={selectedLocation.recommendations}
-                    riskLevel={selectedLocation.risk_level}
-                  />
-                </>
-              ) : (
-                <Card className="flex-1">
-                  <CardContent className="h-full flex flex-col items-center justify-center text-muted-foreground">
-                    <MapPin className="w-12 h-12 mb-4 opacity-50" />
-                    <p className="text-lg font-medium">Wybierz lokalizację</p>
-                    <p className="text-sm">Kliknij marker na mapie, aby zobaczyć szczegóły</p>
-                  </CardContent>
-                </Card>
-              )}
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50">
+      {/* Header */}
+      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-lg bg-[#e2007a] flex items-center justify-center">
+                <span className="text-white font-bold text-xl">GF</span>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-[#e2007a]">
+                  GridFlex OZE
+                </h1>
+                <p className="text-xs text-muted-foreground">Inteligentne zarządzanie energią</p>
+              </div>
             </div>
           </div>
-        )}
+        </div>
+      </header>
 
-        {dashboardData ? (
-          <>
-            <div className="mt-6">
-              <GenerationOverview
-                hourlyGenerationData={dashboardData.hourly_generation}
-                mvLines={mvLines}
-                selectedLine={selectedLine}
-                onSelectLine={handleSelectLine}
-              />
-            </div>
+      {/* Main Content */}
+      <main className="flex-1 flex items-center justify-center p-6">
+        <div className="container max-w-6xl">
+          {/* Hero Section */}
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-[#e2007a]">
+              Witaj w GridFlex OZE
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Platforma do zarządzania i predykcji obciążenia sieci energetycznej
+            </p>
+          </div>
 
-            <div className="mt-6">
-              <MVLinesTable
-                lines={mvLines}
-                selectedLineId={selectedLine?.mv_line_id ?? null}
-                onSelectLine={handleSelectLine}
-              />
-            </div>
-          </>
-        ) : null}
+          {/* Cards Section */}
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {/* TAURON Card */}
+            <Card className="group hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border-2 hover:border-[#e2007a]">
+              <CardHeader className="text-center pb-4">
+                <div className="mx-auto mb-4 h-20 w-20 rounded-full bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Building2 className="h-10 w-10 text-[#e2007a]" />
+                </div>
+                <CardTitle className="text-2xl">TAURON</CardTitle>
+                <CardDescription className="text-base">
+                  Panel zarządzania dla operatora sieci
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <ul className="space-y-2 text-sm text-muted-foreground mb-6">
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-[#e2007a]" />
+                    Monitoring obciążenia sieci w czasie rzeczywistym
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-[#e2007a]" />
+                    Predykcja przeciążeń lokalnych
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-[#e2007a]" />
+                    Rekomendacje zarządzania energią
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-[#e2007a]" />
+                    Analiza danych z instalacji OZE
+                  </li>
+                </ul>
+                <Link href="/tauron" className="block">
+                  <Button className="w-full bg-[#e2007a] hover:bg-[#c00066] group">
+                    Przejdź do panelu
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            {/* CLIENT Card */}
+            <Card className="group hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border-2 hover:border-[#e2007a]">
+              <CardHeader className="text-center pb-4">
+                <div className="mx-auto mb-4 h-20 w-20 rounded-full bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Users className="h-10 w-10 text-[#e2007a]" />
+                </div>
+                <CardTitle className="text-2xl">Klient</CardTitle>
+                <CardDescription className="text-base">
+                  Informacje i wsparcie dla użytkowników
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <ul className="space-y-2 text-sm text-muted-foreground mb-6">
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-[#e2007a]" />
+                    Chatbot po śląsku do obsługi zapytań
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-[#e2007a]" />
+                    Informacje o taryfach energetycznych
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-[#e2007a]" />
+                    Predykcja okresów darmowej energii
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-[#e2007a]" />
+                    Porady dotyczące oszczędzania energii
+                  </li>
+                </ul>
+                <Link href="/client" className="block">
+                  <Button className="w-full bg-[#e2007a] hover:bg-[#c00066] group">
+                    Przejdź do portalu
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </main>
 
-      <Footer />
+      {/* Footer */}
+      <footer className="border-t bg-white/80 backdrop-blur-sm mt-12">
+        <div className="container mx-auto px-6 py-6">
+          <p className="text-center text-sm text-muted-foreground">
+            Made during ETHSilesia 2026 hackathon
+          </p>
+        </div>
+      </footer>
     </div>
   )
 }
