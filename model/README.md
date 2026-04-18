@@ -57,6 +57,73 @@ Outputs are written to `model/artifacts/` and are ignored by Git:
 - `validation_predictions.csv`
 - `test_predictions.csv`
 
+## Predict
+
+Run inference on a feature table:
+
+```bash
+python model/predict_overload.py
+```
+
+Default input:
+
+```text
+data/samples/model_training_gliwice_demo_test.csv
+```
+
+Default outputs:
+
+- `model/artifacts/latest_feeder_predictions.csv`
+- `model/artifacts/latest_location_predictions.csv`
+- `model/artifacts/latest_location_predictions.json`
+
+The feeder-level output has one row per timestamp and feeder:
+
+```text
+timestamp
+location_id
+feeder_id
+predicted_overload_probability
+predicted_overload_event
+risk_level
+pv_generation_kw
+local_demand_kw
+reverse_flow_kw
+reverse_flow_limit_kw
+```
+
+The location-level output aggregates feeder rows into one row per timestamp and
+location:
+
+```text
+timestamp
+location_id
+max_overload_probability
+avg_overload_probability
+predicted_overload_feeder_count
+high_risk_feeder_count
+risk_level
+top_feeder_id
+```
+
+For API/dashboard use, `latest_location_predictions.json` is the cleanest shape:
+one list of prediction records per location and timestamp.
+
+## Near real-time shape
+
+In production or a stronger demo, run the following cycle every 15-60 minutes:
+
+```bash
+python data/fetch_imgw_weather.py
+python data/build_sample_datasets.py
+python data/generate_training_dataset.py --days 1 --output data/samples/latest_prediction_features.csv
+python model/predict_overload.py --input data/samples/latest_prediction_features.csv
+```
+
+PVGIS and OSM/Overpass do not need to be refreshed every few minutes. Weather is
+the source that should refresh frequently. Real OSD measurements, if formally
+available, would replace the synthetic demand/limit/overload context.
+
 ## Why not MLX/PyTorch first
 
 MLX or PyTorch/MPS makes sense later if we add sequence models, spatial graph

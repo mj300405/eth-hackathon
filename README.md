@@ -199,13 +199,63 @@ model/artifacts/test_predictions.csv
 Aktualny baseline to `HistGradientBoostingRegressor` ze `scikit-learn`, trenowany na CPU. Nie wymaga CUDA, PyTorch ani MLX. Na obecnej probce wynik jest rzedu:
 
 ```text
-validation_mae ~= 0.0031
+validation_mae ~= 0.0030
 validation_f1  ~= 0.8455
-test_mae       ~= 0.0028
+test_mae       ~= 0.0024
 test_f1        ~= 0.8595
 ```
 
-### 7. Co faktycznie przewiduje model
+### 7. Wygeneruj predykcje per feeder i lokalizacja
+
+```bash
+python model/predict_overload.py
+```
+
+Domyslne wejscie:
+
+```text
+data/samples/model_training_gliwice_demo_test.csv
+```
+
+Wynik lokalny:
+
+```text
+model/artifacts/latest_feeder_predictions.csv
+model/artifacts/latest_location_predictions.csv
+model/artifacts/latest_location_predictions.json
+```
+
+Format per feeder ma jeden wiersz na `timestamp + feeder_id`:
+
+```text
+timestamp
+location_id
+feeder_id
+predicted_overload_probability
+predicted_overload_event
+risk_level
+pv_generation_kw
+local_demand_kw
+reverse_flow_kw
+reverse_flow_limit_kw
+```
+
+Format per lokalizacja agreguje feedery do jednego wiersza na `timestamp + location_id`:
+
+```text
+timestamp
+location_id
+max_overload_probability
+avg_overload_probability
+predicted_overload_feeder_count
+high_risk_feeder_count
+risk_level
+top_feeder_id
+```
+
+Do API/dashboardu najlepszy jest `latest_location_predictions.json`, bo daje gotowe rekordy per lokalizacja i godzina.
+
+### 8. Co faktycznie przewiduje model
 
 Docelowo model ma przewidywac:
 
@@ -221,7 +271,20 @@ P(syntetyczne przeciazenie | IMGW/PVGIS/OSM + syntetyczny popyt i syntetyczny li
 
 Czyli pipeline jest gotowy pod produkcyjne dane OSD, ale obecny target przeciazenia jest syntetyczny i jawnie oznaczony jako demo.
 
-### 8. Najkrotsze odpalenie, gdy dane API juz sa w repo
+### 9. Jak to wyglada w prawie real-time
+
+W produkcji albo mocniejszym demo uruchamiamy cykl co 15-60 minut:
+
+```bash
+python data/fetch_imgw_weather.py
+python data/build_sample_datasets.py
+python data/generate_training_dataset.py --days 1 --output data/samples/latest_prediction_features.csv
+python model/predict_overload.py --input data/samples/latest_prediction_features.csv
+```
+
+Najczesciej odswiezamy pogode. PVGIS i geometria linii nie musza byc pobierane co kilka minut. Jesli kiedys dostaniemy formalne dane OSD, to w tym miejscu podmieniamy syntetyczny popyt, limity i historie przeciazen na realne dane operatora.
+
+### 10. Najkrotsze odpalenie, gdy dane API juz sa w repo
 
 ```bash
 source .venv/bin/activate
@@ -229,6 +292,7 @@ python data/build_sample_datasets.py
 python data/generate_training_dataset.py
 python data/split_training_dataset.py
 python model/train_overload_model.py
+python model/predict_overload.py
 ```
 
 ## Co pokazujemy jury

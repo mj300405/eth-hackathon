@@ -196,9 +196,9 @@ def main() -> None:
     y_train = target_probability(train_rows)
 
     model = HistGradientBoostingRegressor(
-        max_iter=350,
-        learning_rate=0.055,
-        max_leaf_nodes=15,
+        max_iter=500,
+        learning_rate=0.08,
+        max_leaf_nodes=7,
         l2_regularization=0.03,
         random_state=args.random_state,
     )

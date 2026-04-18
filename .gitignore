@@ -21,6 +21,7 @@ data/processed/
 
 # Local model outputs
 model/artifacts/
+data/samples/latest_prediction_features.csv
 
 # Environment
 .env

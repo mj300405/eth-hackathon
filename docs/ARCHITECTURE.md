@@ -67,6 +67,7 @@ Odpowiada za:
 Aktualne pliki:
 
 - `model/train_overload_model.py`
+- `model/predict_overload.py`
 - `model/requirements.txt`
 - `model/README.md`
 
@@ -94,7 +95,8 @@ Aktualny baseline:
 
 - `HistGradientBoostingRegressor` ze `scikit-learn`,
 - trening CPU na macOS bez CUDA,
-- artefakty lokalne w `model/artifacts/`, ignorowane przez Git.
+- artefakty lokalne w `model/artifacts/`, ignorowane przez Git,
+- predykcje per feeder i agregacja per lokalizacja w `latest_location_predictions.json`.
 
 ### 4. API albo dashboard
 
