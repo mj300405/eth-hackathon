@@ -53,6 +53,18 @@ O współpracy z partnerami zewnętrznymi:
 *(źródło: Podcast o programie AI w grupie Tauron, Tauron Obsługa Klienta, prowadzenie: Martyna Daczkowska)*
 
 Nasz projekt demonstracyjny **GridFlex OZE** realizuje te założenia: łączy **dane operacyjne OSD** z **AI i predykcją**, odpowiada na **konkretne potrzeby biznesowe** (zarządzanie przeciążeniami sieci), wykorzystuje **zasoby własne** (dane, ekspertyza) oraz jest otwarty na **współpracę z dostawcami technologii**.
+## Kontekst branżowy – wizja Taurona
+
+Prezes Taurona, **Grzegorz Lot**, podczas Rady Programowej podkreślał kluczowe wyzwania i kierunki rozwoju:
+
+> "Perspektywa klient, digitalizacja, kwestia jak rynku, regulacji oraz oczywiście zmian technologicznych to są takie wydarzenia, które ściągną tutaj wiele osób."
+
+> "Każda kolejna rada programowa to duża dynamika i ścieranie się różnych poglądów. Rozliczamy dyskusję o przyszłości od tego, żeby podsumować co udało się zrealizować z naszych obietnic, deklaracji w poprzednich wydarzeniach."
+
+*Źródło: Euro PowerOW OZ Power, 30-31 marca 2026 roku, Westin Warsaw Hotel*
+
+Nasz projekt wpisuje się bezpośrednio w te priorytety: **digitalizacja** procesów OSD, wykorzystanie **zmian technologicznych** (AI, predykcja) i odpowiedź na **wyzwania regulacyjne** związane z przyłączaniem OZE.
+
 
 ## Hipoteza
 

@@ -9,7 +9,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
-import type { LocationData } from "@/lib/data"
+import type { LocationData } from "@/lib/api"
 
 interface ForecastChartProps {
   forecast: LocationData["forecast"]

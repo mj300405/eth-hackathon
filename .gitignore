@@ -15,13 +15,22 @@ venv/
 
 # Local data
 data/raw/
-data/processed/
+data/processed/*
+!data/processed/mv_line_geometries_gliwice.geojson
 *.parquet
 *.duckdb
 
-# Local model outputs
-model/artifacts/
+# Local model outputs (ignore prediction CSVs but keep trained model + metrics)
+model/artifacts/*
+!model/artifacts/overload_probability_model.pkl
+!model/artifacts/metrics.json
 data/samples/latest_prediction_features.csv
+
+# Regenerable training datasets (produced by data/generate_training_dataset.py + split)
+data/samples/model_training_gliwice_demo.csv
+data/samples/model_training_gliwice_demo_train.csv
+data/samples/model_training_gliwice_demo_validation.csv
+data/samples/model_training_gliwice_demo_test.csv
 
 # Environment
 .env

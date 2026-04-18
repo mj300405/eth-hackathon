@@ -118,6 +118,7 @@ Aktualne endpointy API:
 
 ```text
 GET /locations
+GET /dashboard
 GET /predictions/locations
 GET /predictions/feeders
 GET /metrics

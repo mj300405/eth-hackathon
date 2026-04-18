@@ -317,6 +317,7 @@ API docs:      http://localhost:8000/docs
 Model docs:    http://localhost:8001/docs
 API health:    http://localhost:8000/health
 Predykcje:     http://localhost:8000/predictions/locations
+Dashboard API: http://localhost:8000/dashboard
 Metryki:       http://localhost:8000/metrics
 ```
 
@@ -325,9 +326,10 @@ Kontener `model` trenuje artefakt przy starcie, jesli nie ma jeszcze pliku
 `data/` sa montowane do kontenera, a artefakty modelu trafiaja do wolumenu
 `model-artifacts`.
 
-Na teraz frontend jest uruchamiany jako osobny kontener aplikacyjny. Przepiecie
-komponentow dashboardu z danych statycznych na endpointy `api` to kolejny krok
-po ustabilizowaniu kontraktu odpowiedzi.
+Frontend jest uruchamiany jako osobny kontener aplikacyjny i pobiera dane przez
+`NEXT_PUBLIC_API_BASE_URL`. Kontrakt UI wystawia endpoint `GET /dashboard`,
+zbudowany z predykcji model service. W dashboardzie nie trzymamy juz recznie
+wpisanych danych testowych.
 
 ## Co pokazujemy jury
 

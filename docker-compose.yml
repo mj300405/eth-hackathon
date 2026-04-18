@@ -33,8 +33,12 @@ services:
       MODEL_SERVICE_URL: http://model:8001
       REQUEST_TIMEOUT_SECONDS: "30"
       CORS_ALLOW_ORIGINS: http://localhost:3000,http://127.0.0.1:3000
+      MV_LINE_GEOMETRY_PATH: data/processed/mv_line_geometries_gliwice.geojson
+      MV_LINE_GEOMETRY_FALLBACK_PATH: data/samples/mv_line_geometries_gliwice_sample.geojson
     ports:
       - "8000:8000"
+    volumes:
+      - ./data:/workspace/data:ro
     depends_on:
       model:
         condition: service_healthy
