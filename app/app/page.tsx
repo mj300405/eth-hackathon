@@ -127,7 +127,7 @@ export default function LandingPage() {
       <footer className="border-t bg-white/80 backdrop-blur-sm mt-12">
         <div className="container mx-auto px-6 py-6">
           <p className="text-center text-sm text-muted-foreground">
-            © 2024 GridFlex OZE. System predykcji przeciążeń sieci dystrybucyjnej.
+            Made during ETHSilesia 2026 hackathon
           </p>
         </div>
       </footer>
