@@ -1,0 +1,58 @@
+{
+  "input": "data/samples/model_training_gliwice_demo.csv",
+  "split_strategy": "time_ordered_unique_timestamp",
+  "reason": "avoid leakage between neighboring hourly observations and feeder rows from the same hour",
+  "ratios": {
+    "train": 0.7,
+    "validation": 0.15,
+    "test": 0.15
+  },
+  "target_columns": [
+    "target_overload_probability",
+    "target_overload_event"
+  ],
+  "splits": {
+    "train": {
+      "rows": 2520,
+      "timestamps": 504,
+      "start_timestamp": "2026-04-01T00:00:00+02:00",
+      "end_timestamp": "2026-04-21T23:00:00+02:00",
+      "target_event_count": 288,
+      "target_event_rate": 0.1143,
+      "avg_target_overload_probability": 0.1148,
+      "risk_level_counts": {
+        "high": 239,
+        "low": 2211,
+        "medium": 70
+      }
+    },
+    "validation": {
+      "rows": 540,
+      "timestamps": 108,
+      "start_timestamp": "2026-04-22T00:00:00+02:00",
+      "end_timestamp": "2026-04-26T11:00:00+02:00",
+      "target_event_count": 62,
+      "target_event_rate": 0.1148,
+      "avg_target_overload_probability": 0.1258,
+      "risk_level_counts": {
+        "high": 56,
+        "low": 464,
+        "medium": 20
+      }
+    },
+    "test": {
+      "rows": 540,
+      "timestamps": 108,
+      "start_timestamp": "2026-04-26T12:00:00+02:00",
+      "end_timestamp": "2026-04-30T23:00:00+02:00",
+      "target_event_count": 63,
+      "target_event_rate": 0.1167,
+      "avg_target_overload_probability": 0.1161,
+      "risk_level_counts": {
+        "high": 50,
+        "low": 473,
+        "medium": 17
+      }
+    }
+  }
+}

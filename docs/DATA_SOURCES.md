@@ -57,6 +57,7 @@ Ze wzgledu na unbundling projekt jest kierowany wylacznie do Tauron Dystrybucja 
 | `grid_proxy` | nie materializowany osobno | brak osobnego pliku | dataset wyliczany | logika polaczenia jest obecnie w feederach, constraints i risk score |
 | `risk_hourly` | gotowy jako probka Gliwice | `data/samples/risk_hourly_gliwice_demo.csv` | dataset wyliczany | finalny wynik do mapy i dashboardu |
 | `model_training` | gotowy jako probka Gliwice | `data/samples/model_training_gliwice_demo.csv` | dataset wyliczany z PVGIS, OSM/proxy i syntetycznego kontekstu OSD | plaski dataset ML z `target_overload_probability` i `target_overload_event` |
+| `model_training_splits` | gotowe jako probki Gliwice | `data/samples/model_training_gliwice_demo_train.csv`, `data/samples/model_training_gliwice_demo_validation.csv`, `data/samples/model_training_gliwice_demo_test.csv` | czasowy split datasetu ML | train/validation/test bez leakage miedzy godzinami |
 | `pse_oze_generation` | opcjonalny | `data/raw/pse_oze_generation.csv` | PSE raporty | walidacja trendow PV/wiatr na poziomie kraju |
 
 ## Dane publiczne

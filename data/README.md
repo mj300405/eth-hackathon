@@ -37,6 +37,7 @@ Tauron dostepne moce, Tauron uslugi elastycznosci, PSE, URE i GUS/TERYT sa opisa
 | `data/fetch_mv_lines.py` | pobiera publiczne/proxy przebiegi linii SN z OSM/Overpass dla podanego bbox | realne publiczne API/proxy |
 | `data/build_sample_datasets.py` | buduje kompletna probke POC: feedery, projekcje meteo, generacje PV, popyt, limity, przeciazenia i risk score | API-first + minimalna syntetyka OSD |
 | `data/generate_training_dataset.py` | buduje plaski dataset ML z cechami, `target_overload_probability` i `target_overload_event` | API-first + syntetyczny target OSD |
+| `data/split_training_dataset.py` | tworzy czasowy podzial train/validation/test bez mieszania tych samych godzin miedzy zbiorami | walidacja modelu |
 
 `build_sample_datasets.py` nie wymysla recznie etykiet ryzyka. Liczy je deterministycznie z danych wejsciowych:
 
@@ -61,6 +62,21 @@ python3 data/generate_training_dataset.py \
   --pvgis-raw data/raw/pvgis_gliwice_2020.json \
   --days 90
 ```
+
+Po wygenerowaniu datasetu ML robimy czasowy split:
+
+```bash
+python3 data/split_training_dataset.py
+```
+
+Domyslny podzial to 70/15/15 po unikalnych timestampach:
+
+- `data/samples/model_training_gliwice_demo_train.csv` - trening,
+- `data/samples/model_training_gliwice_demo_validation.csv` - walidacja i dobor progow/modelu,
+- `data/samples/model_training_gliwice_demo_test.csv` - finalny test,
+- `data/samples/model_training_gliwice_demo_splits.json` - metadane splitu, zakres dat i liczba zdarzen.
+
+Nie robimy losowego splitu, bo w predykcji godzinowej mieszalby sasiednie godziny i feedery z tej samej godziny miedzy train/test.
 
 ## Minimalne pliki demo
 
