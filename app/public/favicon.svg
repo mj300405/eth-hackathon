@@ -1,0 +1,7 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" rx="6" fill="#e2007a"/>
+  <g transform="translate(16, 10)">
+    <path d="M1 0L-2 5H1L0 10L3 5H0L1 0Z" fill="white" stroke="white" stroke-width="0.5"/>
+  </g>
+  <text x="6" y="28" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">GF</text>
+</svg>
