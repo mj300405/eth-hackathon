@@ -1,4 +1,4 @@
-# GridFlex OZE
+﻿# GridFlex OZE
 
 Projekt przygotowany na hackathon ETHSilesia 2026.
 
@@ -58,6 +58,19 @@ Po starcie:
 - operator sprawdza, gdzie i kiedy może pojawić się podwyższone ryzyko lokalnej nadwyżki OZE,
 - dashboard pokazuje lokalizacje, linie SN, poziomy ryzyka i rekomendacje działań,
 - klient dostaje prostszy widok z taryfami, poradami i informacją o potencjalnych oknach korzystniejszego zużycia energii.
+
+## Uczestnicy i zgłoszenie
+
+### Uczestnicy
+
+- Aleksandra Maksimowska
+- Michał Jagoda
+- Jakub Barylak
+
+### Kategorie konkursowe
+
+- AI Challenge powered by Tauron
+- Katowicki.HUB: Innowacje
 
 ## Dokumentacja
 
