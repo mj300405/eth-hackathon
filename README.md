@@ -1,4 +1,4 @@
-﻿# GridFlex OZE
+# GridFlex OZE
 
 Projekt przygotowany na hackathon ETHSilesia 2026.
 
@@ -39,19 +39,49 @@ To oznacza, że projekt nie prezentuje rzeczywistych danych operacyjnych OSD i n
 - `data/` - skrypty pobierania i przygotowania danych,
 - `docs/` - materiały do pitchu i opis architektury.
 
-## Jak uruchomić demo
+## Jak uruchomić projekt
 
-Najprostsza opcja:
+Rekomendowany sposób uruchomienia to `Docker Compose`, bo startuje od razu trzy usługi:
+
+- `frontend` - aplikacja Next.js,
+- `api` - backend FastAPI,
+- `model` - serwis modelu predykcyjnego.
+
+### Wymagania
+
+- Docker
+- Docker Compose
+
+### Start lokalny
+
+Z katalogu głównego projektu uruchom:
 
 ```bash
 docker compose up --build
 ```
 
-Po starcie:
+Przy pierwszym starcie serwis `model` może chwilę trenować model, a `api` i `frontend` poczekają na jego gotowość.
+
+Po uruchomieniu aplikacja będzie dostępna pod adresami:
 
 - frontend: `http://localhost:3000`
-- API: `http://localhost:8000/docs`
-- model service: `http://localhost:8001/docs`
+- API: `http://localhost:8000`
+- dokumentacja API: `http://localhost:8000/docs`
+- model service: `http://localhost:8001`
+
+### Zatrzymanie usług
+
+```bash
+docker compose down
+```
+
+### Wariant produkcyjny
+
+Repo zawiera też plik `docker-compose.prod.yml` z nadpisaniem adresów usług. Uruchomienie:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
+```
 
 ## Najważniejsze scenariusze
 
